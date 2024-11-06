@@ -11,7 +11,7 @@ word
 npm install
 ```
 ```console
-npm run woops build
+npm run wops build
 ```
 ```console
 docker compose up
