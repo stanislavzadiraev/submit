@@ -1,0 +1,23 @@
+{
+  "name": "submit",
+  "version": "0.0.1",
+  "keywords": [],
+  "description": "Submit WordPress",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stanislavzadiraev/submit.git"
+  },
+  "author": "https://github.com/stanislavzadiraev",
+  "homepage": "https://github.com/stanislavzadiraev/submit#readme",
+  "bugs": {
+    "url": "https://github.com/stanislavzadiraev/submit/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "wops": "wops"
+  },
+  "devDependencies": {
+    "wops": "github:stanislavzadiraev/wops"
+  }
+}

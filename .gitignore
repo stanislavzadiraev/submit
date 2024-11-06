@@ -1,0 +1,16 @@
+*modules*
+*lock*
+
+*docker*
+
+db
+wp
+
+themes/*
+!themes/coda*
+
+uploads/*
+!uploads/coda*
+
+plugins/*
+!plugins/coda*
