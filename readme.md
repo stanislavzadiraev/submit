@@ -1,12 +1,5 @@
 # Submit
-##
-```
-user
-```
-```
-word
-```
-##
+## setup
 ```console
 npm install
 ```
@@ -16,3 +9,11 @@ npm run wops build
 ```console
 docker compose up
 ```
+## login
+```
+user
+```
+```
+word
+```
+
