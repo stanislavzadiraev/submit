@@ -11,69 +11,95 @@ function R($r){
 }
 
 function V($v){
-    if (gettype($v) == 'integer') return '/ '.$v.' /';
+    if (gettype($v) == 'integer') return $v;
     else return '';
 }
 
+function A($a){
+    if (gettype($a) == 'array') return $a;
+    else return null;
+}
+
 function render_node($node){
-    if ($node['type'] == 'form')
-        return '<form name="'.$node['name'].'">'.
-            $node['label'].
-            '</br>'.
-            implode('<br/>', array_map('render_node', $node['value'])).
-            '</br>'.
-            '<button type="submit" id="submit" class="button">'. 
-                $node['state'].
-            '</button>'.
-            '<script>
-                document
-                    .querySelectorAll(`form[name="'.$node['name'].'"]>select`)
-                    .forEach(select =>
-                        select
-                            .value = select.getAttribute(`state`)
-                    )
+    if ($node == null)
+        return '';
 
-                document
-                    .querySelectorAll(`form[name="'.$node['name'].'"]>input[type="checkbox"]`)
-                    .forEach(checkbox =>
-                        checkbox
-                            .checked = checkbox.getAttribute(`state`) == `true` && true || false
+
+    else if ($node['type'] == 'form')
+        return
+            '<form name="'.$node['name'].'">'.
+                '<div>'.$node['label'].'</div>'.
+                '</br>'.
+                implode('<br/>', array_map('render_node', $node['value'])).
+                '</br>'.
+                '<button type="submit" id="submit" class="button">'. 
+                    $node['state'].
+                '</button>'.
+                '<script>
+                    document
+                        .querySelectorAll(`form[name="'.$node['name'].'"]>select`)
+                        .forEach(select =>
+                            select.value = select.getAttribute(`state`)
                         )
-            </script>'. 
-        '</form>';
 
-
-    else if ($node['type'] == 'value')
-        return $node['value'];
+                    document
+                        .querySelectorAll(`form[name="'.$node['name'].'"]>div>input[type="checkbox"]`)
+                        .forEach(checkbox => (
+                            checkbox.checked = checkbox.getAttribute(`state`) == `false` && true || `true` && false || undefined,
+                            checkbox.click()
+                        ))
+                </script>'. 
+            '</form>';
 
 
     else if ($node['type'] == 'text')
-        return '<label for="'.$node['name'].'" >'. $node['label'].R($node['required']).'</label>'.
-        '&nbsp;'.
-        '<input type="text"'.' name="'.$node['name'].'" value="'.$node['value'].'" placeholder="'.$node['placeholder'].'" >';
+        return
+            '<div id="'.$node['name'].'">'.
+                '<label for="'.$node['name'].'" >'. $node['label'].R($node['required']).'</label>'.
+                '&nbsp;'.
+                '<input type="text"'.' name="'.$node['name'].'" value="'.$node['value'].'" placeholder="'.$node['placeholder'].'" >'.
+            '</div>';
 
 
     else if ($node['type'] == 'select')
-        return '<label for="'.$node['name'].'">'.$node['label'].R($node['required']).'</label>'.
-        '&nbsp;'.
-        '<select name="'.$node['name'].'" state="'.$node['state'].'">'.
-            implode('', array_map(
-                function($node){
-                    return '<option value="'.$node['name'].'">'.$node['label'].' '.V($node['value']).'</option>';
-                },
-                $node['value']
-            )).
-        '</select>';
+        return
+            '<div id="'.$node['name'].'">'.
+                '<label for="'.$node['name'].'">'.$node['label'].R($node['required']).'</label>'.
+                '&nbsp;'.
+                '<select name="'.$node['name'].'" state="'.$node['state'].'">'.
+                    implode('', array_map(
+                        function($node){
+                            return '<option value="'.$node['name'].'">'.$node['label'].' '.V($node['value']).'</option>';
+                        },
+                        $node['value']
+                    )).
+                '</select>'.
+            '</div>';
 
 
     else if ($node['type'] == 'check')
-        return '<input type="checkbox"'.' name="'.$node['name'].'" state="'.$node['state'].'">'.
-        '&nbsp;'.
-        '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.$node['label'].R($node['required']).'</label>';
+        return
+            '<div id="'.$node['name'].'">'.
+                '<input type="checkbox"'.' name="'.$node['name'].'" value="'.V($node['value']).A($node['value'])['name'].'" state="'.$node['state'].'">'.
+                '&nbsp;'.
+                '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.$node['label'].R($node['required']).'</label>'.
+                render_node(A($node['value'])).
+                '<script>
+                    document
+                        .querySelector(`[name="'.$node['name'].'"]`)
+                        .addEventListener("change", e => 
+                            document
+                                .querySelector(`#'.A($node['value'])['name'].'`)
+                                .style.display  = !e.target.checked && "none" || ""
+                        )
+                </script>'.
+            '</div>';
 
-        
     else
-        return '(some shit)';
+        return 
+            '<div>'.
+                '(some shit)'.
+            '</div>';
 }
 
 add_shortcode(

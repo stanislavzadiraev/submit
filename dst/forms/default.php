@@ -36,7 +36,6 @@ return [
             'label' => 'Имя',
             'type' => 'text',
             'value' => 'Какое-то Имя',
-            'placeholder' => 'Введите ваше имя',
             'required' => true
         ],
         [
@@ -60,8 +59,46 @@ return [
             'type' => 'check',
             'value' => 100,
             'state' => 'true',
-            'required' => false
-        ]
+        ],
+        [
+            'name' => 'check_three',
+            'label' => 'Третий Чек',
+            'type' => 'check',
+            'value' => [
+                'name' => 'second_name',
+                'label' => 'Отчество',
+                'type' => 'text',
+                'placeholder' => 'Введите ваше отчество',
+                'required' => true
+            ],
+            'state' => 'false',
+        ],
+        [
+            'name' => 'super_option',
+            'label' => 'Супер Селект',
+            'type' => 'select',
+            'value' => [
+                [
+                    'name' => 'first',
+                    'type' => 'value',
+                    'label' => 'Опция Раз',
+                    'value' => 100
+                ],
+                [
+                    'name' => 'second',
+                    'type' => 'value',
+                    'label' => 'Опция Два',
+                    'value' => 200
+                ],
+                [
+                    'name' => 'third',
+                    'type' => 'value',
+                    'label' => 'Опция Три',
+                    'value' => 300
+                ]
+            ],
+            'state' => 'second'
+        ],      
     ],
     'state' => 'Отправить форму и перейти к оплате'
 ];
