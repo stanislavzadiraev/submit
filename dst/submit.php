@@ -90,7 +90,7 @@ function render_node($node){
                         .addEventListener("change", e => 
                             document
                                 .querySelector(`#'.A($node['value'])['name'].'`)
-                                .style.display  = !e.target.checked && "none" || ""
+                                .style.display  = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined
                         )
                 </script>'.
             '</div>';
