@@ -6,7 +6,12 @@
  */
 
 function R($r){
-    if ($r) return '*';
+    if ($r) return ' * ';
+    else return ' ';
+}
+
+function V($v){
+    if (gettype($v) == 'integer') return '/ '.$v.' /';
     else return '';
 }
 
@@ -54,21 +59,17 @@ function render_node($node){
         '<select name="'.$node['name'].'" state="'.$node['state'].'">'.
             implode('', array_map(
                 function($node){
-                    return '<option value="'.$node['name'].'">'.$node['label'].'</option>';
+                    return '<option value="'.$node['name'].'">'.$node['label'].' '.V($node['value']).'</option>';
                 },
                 $node['value']
             )).
-        '</select>'.
-        '</br>'.
-        implode('<br/>', array_map('render_node', $node['value']));
+        '</select>';
 
 
     else if ($node['type'] == 'check')
         return '<input type="checkbox"'.' name="'.$node['name'].'" state="'.$node['state'].'">'.
         '&nbsp;'.
-        '<label for="'.$node['name'].'">'.$node['label'].R($node['required']).'</label>'.
-        '</br>'.
-        implode('<br/>', array_map('render_node', $node['value']));
+        '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.$node['label'].R($node['required']).'</label>';
 
         
     else

@@ -51,16 +51,6 @@ return [
             'name' => 'check_one',
             'label' => 'Первый Чек',
             'type' => 'check',
-            'value' => [
-                [
-                    'type' => 'value',
-                    'value' => 0
-                ],
-                [
-                    'type' => 'value',
-                    'value' => 0
-                ],
-            ],
             'state' => 'false',
             'required' => true
         ],
@@ -68,16 +58,7 @@ return [
             'name' => 'check_two',
             'label' => 'Второй Чек',
             'type' => 'check',
-            'value' => [
-                [
-                    'type' => 'value',
-                    'value' => 0
-                ],
-                [
-                    'type' => 'value',
-                    'value' => 100
-                ],
-            ],
+            'value' => 100,
             'state' => 'true',
             'required' => false
         ]
