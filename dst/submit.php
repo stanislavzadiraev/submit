@@ -25,15 +25,14 @@ function render_node($node){
                     .querySelectorAll(`form[name="'.$node['name'].'"]>select`)
                     .forEach(select =>
                         select
-                            .querySelector(`option[value="${select.getAttribute(`state`)}"]`)
-                            .setAttribute(`selected`,``)
+                            .value = select.getAttribute(`state`)
                     )
 
                 document
                     .querySelectorAll(`form[name="'.$node['name'].'"]>input[type="checkbox"]`)
                     .forEach(checkbox =>
-                        checkbox.getAttribute(`state`) == `true` && checkbox
-                            .setAttribute(`checked`, ``)
+                        checkbox
+                            .checked = checkbox.getAttribute(`state`) == `true` && true || false
                         )
             </script>'. 
         '</form>';
