@@ -89,10 +89,10 @@ return [
                 ],
                 [
                     'name' => 'hardest',
-                    'label' => 'Cложнейшее',
+                    'label' => 'Сложнейшее',
                     'value' => [
                         'name' => 'hardest',
-                        'label' => 'Да, Cложнейшее',
+                        'label' => 'Да, Такое',
                         'type' => 'node',
                         'value' => [
                             [

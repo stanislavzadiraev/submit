@@ -6,8 +6,8 @@
  */
 
 function R($r){
-    if ($r) return ' * ';
-    else return ' ';
+    if ($r) return '*';
+    else return '';
 }
 
 function V($v){
@@ -32,11 +32,9 @@ function render_node($node){
 
     else if ($node['type'] == 'form')
         return
-            '<form name="'.$node['name'].'">'.
+            '<form id="'.$node['name'].'" name="'.$node['name'].'">'.
                 '<div>'.$node['label'].'</div>'.
-                '</br>'.
-                    implode('<br/>', array_map('render_node', $node['value'])).
-                '</br>'.
+                    implode(array_map('render_node', $node['value'])).
                 '<button type="submit" id="submit" class="button">'. 
                     $node['state'].
                 '</button>'.
@@ -60,19 +58,16 @@ function render_node($node){
 
     else if ($node['type'] == 'node')            
         return
-            '<div id="'.$node['name'].'">'.
+            '<div id="'.$node['name'].'" name="'.$node['name'].'">'.
                 '<div>'.$node['label'].'</div>'.
-                '</br>'.
-                    implode('<br/>', array_map('render_node', $node['value'])).
-                '</br>'.
+                implode(array_map('render_node', $node['value'])).
             '</div>';
 
 
     else if ($node['type'] == 'text')
         return
             '<div id="'.$node['name'].'">'.
-                '<label for="'.$node['name'].'" >'. $node['label'].R($node['required']).'</label>'.
-                '&nbsp;'.
+                '<label for="'.$node['name'].'" >'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
                 '<input type="text"'.' name="'.$node['name'].'" value="'.$node['value'].'" placeholder="'.$node['placeholder'].'" >'.
             '</div>';
 
@@ -80,17 +75,16 @@ function render_node($node){
     else if ($node['type'] == 'select')
         return
             '<div id="'.$node['name'].'">'.
-                '<label for="'.$node['name'].'">'.$node['label'].R($node['required']).'</label>'.
-                '&nbsp;'.
+                '<label for="'.$node['name'].'">'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
                 '<select name="'.$node['name'].'" state="'.$node['state'].'">'.
-                    implode('', array_map(
+                    implode(array_map(
                         function($node){
-                            return '<option value="'.$node['name'].'">'.V($node).$node['label'].' '.V($node['value']).'</option>';
+                            return '<option value="'.$node['name'].'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
                         },
                         $node['value']
                     )).
                 '</select>'.
-                implode('', array_map(
+                implode(array_map(
                     function($node){
                         return render_node(A($node['value']));
                     },
@@ -98,15 +92,15 @@ function render_node($node){
                 )).
                 '<script>
                     document
-                        .querySelector(`[name="'.$node['name'].'"]`)
-                        .addEventListener("change", e => (
+                        .querySelector(`#'.$node['name'].'`)
+                        .addEventListener("change", event => (
                             document
                                 .querySelectorAll(`#'.$node['name'].'>div`)
                                 .forEach(div =>
                                     div.style.display = "none"
                                 ),
                                 document
-                                .querySelector(`#'.$node['name'].'>#${e.target.value}`)
+                                .querySelector(`#'.$node['name'].'>#${event.target.value}`)
                                 .style.display  = "revert"
                         ))
                 </script>'.                
@@ -116,17 +110,16 @@ function render_node($node){
     else if ($node['type'] == 'check')
         return
             '<div id="'.$node['name'].'">'.
-                '<input type="checkbox"'.' name="'.$node['name'].'" value="'.V($node['value']).A($node['value'])['name'].'" state="'.$node['state'].'">'.
-                '&nbsp;'.
-                '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.$node['label'].R($node['required']).'</label>'.
+                '<input type="checkbox"'.' name="'.$node['name'].'" state="'.$node['state'].'">'.'&nbsp;'.
+                '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.implode(' ', [R($node['required']), S($node['label'])]).'</label>'.
                 render_node(A($node['value'])).
                 '<script>
                     document
-                        .querySelector(`[name="'.$node['name'].'"]`)
-                        .addEventListener("change", e => 
+                        .querySelector(`#'.$node['name'].'`)
+                        .addEventListener("change", event => 
                             document
                                 .querySelector(`#'.A($node['value'])['name'].'`)
-                                .style.display  = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined
+                                .style.display  = event.target.checked == false && "none" || event.target.checked == true && "revert" || undefined
                         )
                 </script>'.
             '</div>';
