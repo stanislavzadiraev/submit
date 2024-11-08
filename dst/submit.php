@@ -15,6 +15,11 @@ function V($v){
     else return '';
 }
 
+function S($s){
+    if (gettype($s) == 'string') return $s;
+    else return '';
+}
+
 function A($a){
     if (gettype($a) == 'array') return $a;
     else return null;
@@ -30,26 +35,37 @@ function render_node($node){
             '<form name="'.$node['name'].'">'.
                 '<div>'.$node['label'].'</div>'.
                 '</br>'.
-                implode('<br/>', array_map('render_node', $node['value'])).
+                    implode('<br/>', array_map('render_node', $node['value'])).
                 '</br>'.
                 '<button type="submit" id="submit" class="button">'. 
                     $node['state'].
                 '</button>'.
                 '<script>
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"]>select`)
-                        .forEach(select =>
-                            select.value = select.getAttribute(`state`)
-                        )
+                        .querySelectorAll(`form[name="'.$node['name'].'"] div>select`)
+                        .forEach(select => (
+                            select.value = select.getAttribute(`state`),
+                            select.dispatchEvent(new Event("change"))
+                        ))
 
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"]>div>input[type="checkbox"]`)
+                        .querySelectorAll(`form[name="'.$node['name'].'"] div>input[type="checkbox"]`)
                         .forEach(checkbox => (
                             checkbox.checked = checkbox.getAttribute(`state`) == `false` && true || `true` && false || undefined,
                             checkbox.click()
                         ))
                 </script>'. 
             '</form>';
+
+
+    else if ($node['type'] == 'node')            
+        return
+            '<div id="'.$node['name'].'">'.
+                '<div>'.$node['label'].'</div>'.
+                '</br>'.
+                    implode('<br/>', array_map('render_node', $node['value'])).
+                '</br>'.
+            '</div>';
 
 
     else if ($node['type'] == 'text')
@@ -69,11 +85,31 @@ function render_node($node){
                 '<select name="'.$node['name'].'" state="'.$node['state'].'">'.
                     implode('', array_map(
                         function($node){
-                            return '<option value="'.$node['name'].'">'.$node['label'].' '.V($node['value']).'</option>';
+                            return '<option value="'.$node['name'].'">'.V($node).$node['label'].' '.V($node['value']).'</option>';
                         },
                         $node['value']
                     )).
                 '</select>'.
+                implode('', array_map(
+                    function($node){
+                        return render_node(A($node['value']));
+                    },
+                    $node['value']
+                )).
+                '<script>
+                    document
+                        .querySelector(`[name="'.$node['name'].'"]`)
+                        .addEventListener("change", e => (
+                            document
+                                .querySelectorAll(`#'.$node['name'].'>div`)
+                                .forEach(div =>
+                                    div.style.display = "none"
+                                ),
+                                document
+                                .querySelector(`#'.$node['name'].'>#${e.target.value}`)
+                                .style.display  = "revert"
+                        ))
+                </script>'.                
             '</div>';
 
 
