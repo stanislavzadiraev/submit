@@ -39,9 +39,8 @@ function render_node($node){
                     $node['state'].
                 '</button>'.
                 '<script>
-
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"] div>select`)
+                        .querySelectorAll(`form#'.$node['name'].' div>select`)
                         .forEach(select => (
                             select.addEventListener("change", event => (
                                 event.target.attributes.state.value = event.target.value,
@@ -54,7 +53,7 @@ function render_node($node){
                         ))
 
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"] div>select`)
+                        .querySelectorAll(`form#'.$node['name'].' div>select`)
                         .forEach(select => (
                             select.value = select.attributes.state.value,
                             select.dispatchEvent(new Event("change"))
@@ -62,7 +61,7 @@ function render_node($node){
 
 
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"] div>input[type="checkbox"]`)
+                        .querySelectorAll(`form#'.$node['name'].' div>input[type="checkbox"]`)
                         .forEach(checkbox => (
                             checkbox.addEventListener("change", event => ( 
                                 event.target.attributes.state.value = event.target.checked,
@@ -75,7 +74,7 @@ function render_node($node){
                         ))
 
                     document
-                        .querySelectorAll(`form[name="'.$node['name'].'"] div>input[type="checkbox"]`)
+                        .querySelectorAll(`form#'.$node['name'].' div>input[type="checkbox"]`)
                         .forEach(checkbox => (
                             checkbox.checked = checkbox.getAttribute(`state`) == `false` && true || `true` && false,
                             checkbox.click()
