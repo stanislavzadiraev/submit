@@ -48,6 +48,33 @@ return [
             'required' => true
         ],
         [
+            'name' => 'awesome',
+            'label' => 'Невероятное',
+            'type' => 'check',
+            'value' => [
+                'name' => 'sick',
+                'label' => 'Безумие',
+                'type' => 'select',
+                'value' => [
+                    [
+                        'name' => 'sick_first',
+                        'label' => 'Платно',
+                        'value' => 100
+                    ],
+                    [
+                        'name' => 'sick_second',
+                        'label' => 'Бесплатно'
+                    ],
+                    [
+                        'name' => 'sick_third',
+                        'value' => 100
+                    ]
+                ],
+                'state' => 'sick_first'
+            ],
+            'state' => 'false',            
+        ],
+        [
             'name' => 'option',
             'label' => 'Обязательно и платно и бесплатно',
             'type' => 'select',
@@ -74,15 +101,16 @@ return [
             'type' => 'select',
             'value' => [
                 [
-                    'name' => 'first',
+                    'name' => 'empty',
                 ],
                 [
                     'name' => 'hard',
                     'label' => 'Cложное',
                     'value' => [
                         'name' => 'hard',
-                        'label' => 'Обязательно и бесплатно',
+                        'label' => 'Небязательно и платно',
                         'type' => 'check',
+                        'value' => 200,
                         'state' => 'false',
                         'required' => true
                     ]
@@ -109,12 +137,12 @@ return [
                                 'value' => '',
                                 'placeholder' => 'Введите фамилию',
                                 'required' => true
-                            ],                            
+                            ],                          
                         ]
                     ]
                 ]
             ],
-            'state' => 'second'
+            'state' => 'hardest'
         ],      
     ],
     'state' => 'Отправить форму и перейти к оплате'
