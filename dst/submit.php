@@ -39,6 +39,7 @@ function render_node($node){
                     $node['state'].
                 '</button>'.
                 '<script>
+
                     document
                         .querySelectorAll(`form#'.$node['name'].' div>select`)
                         .forEach(select => (
@@ -49,16 +50,10 @@ function render_node($node){
                                     document.querySelector(`div#${event.target.attributes.state.value}`)?.attributes?.cost?.value ||
                                     0   
                                 )
-                            ))
-                        ))
-
-                    document
-                        .querySelectorAll(`form#'.$node['name'].' div>select`)
-                        .forEach(select => (
-                            select.value = select.attributes.state.value,
+                            )),
+                            select.value = select.attributes.state.value || 0,
                             select.dispatchEvent(new Event("change"))
                         ))
-
 
                     document
                         .querySelectorAll(`form#'.$node['name'].' div>input[type="checkbox"]`)
@@ -70,16 +65,10 @@ function render_node($node){
                                     event.target.attributes.state.value == "true" && document.querySelector(`div#${event.target.attributes.value.value}`)?.attributes?.cost?.value ||
                                     0
                                 )                          
-                            ))
+                            )),
+                            checkbox.checked = checkbox.attributes.state.value == `true` && true || false,
+                            checkbox.dispatchEvent(new Event("change"))
                         ))
-
-                    document
-                        .querySelectorAll(`form#'.$node['name'].' div>input[type="checkbox"]`)
-                        .forEach(checkbox => (
-                            checkbox.checked = checkbox.getAttribute(`state`) == `false` && true || `true` && false,
-                            checkbox.click()
-                        ))
-
                     
                 </script>'. 
             '</form>';
@@ -121,7 +110,7 @@ function render_node($node){
                 )).
                 '<script>
                     document
-                        .querySelector(`[name="'.$node['name'].'"]`)
+                        .querySelector(`#'.$node['name'].'>select`)
                         .addEventListener("change", e => (
                             document
                                 .querySelectorAll(`#'.$node['name'].'>div`)
@@ -138,7 +127,7 @@ function render_node($node){
                                 div
                                     .addEventListener("change", e => (
                                         document
-                                            .querySelector(`[name="'.$node['name'].'"]`)
+                                            .querySelector(`#'.$node['name'].'>select`)
                                                 .dispatchEvent(new Event("change"))
                                     ))
                             )
@@ -154,19 +143,19 @@ function render_node($node){
                 render_node(A($node['value'])).
                 '<script>
                     document
-                        .querySelector(`[name="'.$node['name'].'"]`)
+                        .querySelector(`#'.$node['name'].'>input`)
                         .addEventListener("change", e => (
                             document
                                 .querySelector(`#'.A($node['value'])['name'].'`)
                                 .style.display = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined
                         ))
-                                        document
+                    document
                         .querySelectorAll(`#'.$node['name'].'>div`)
                             .forEach(div =>
                                 div
                                     .addEventListener("change", e => (
                                         document
-                                            .querySelector(`[name="'.$node['name'].'"]`)
+                                            .querySelector(`#'.$node['name'].'>input`)
                                                 .dispatchEvent(new Event("change"))
                                     ))
                             )
