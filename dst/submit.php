@@ -35,8 +35,8 @@ function render_node($node){
             '<form id="'.$node['name'].'" name="'.$node['name'].'">'.
                 '<div>'.$node['label'].'</div>'.
                     implode(array_map('render_node', $node['value'])).
-                '<button type="submit" name="submit" class="button">'. 
-                    $node['state'].
+                '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'. 
+
                 '</button>'.
                 '<script>
                     document
@@ -95,7 +95,12 @@ function render_node($node){
                                         document.querySelector(`form#'.$node['name'].'`).attributes.cost.value = 
                                             (Number(document.querySelector(`form#'.$node['name'].'`).attributes.cost.value) || 0) + 
                                             (Number(div.attributes.cost?.value) || 0)
-                                    )
+                                    ),
+                                    document
+                                        .querySelector(`form#'.$node['name'].'>button`).innerHTML = [
+                                            document.querySelector(`form#'.$node['name'].'>button[name="submit"]`).attributes.text.value,
+                                            document.querySelector(`form#'.$node['name'].'`).attributes.cost.value
+                                        ].join(` `)
                         ))
                     document
                         .querySelector(`form#'.$node['name'].'`)
