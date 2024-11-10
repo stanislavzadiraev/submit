@@ -32,7 +32,7 @@ function render_node($node){
 
     else if ($node['type'] == 'form')
         return
-            '<form id="'.$node['name'].'" name="'.$node['name'].'">'.
+            '<form id="'.$node['name'].'" name="'.$node['name'].'" method="post">'.
                 '<div>'.$node['label'].'</div>'.
                     implode(array_map('render_node', $node['value'])).
                 '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'. 
