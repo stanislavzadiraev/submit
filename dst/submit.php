@@ -47,23 +47,23 @@ function render_node($node){
                         )))    
                     document
                         .querySelector(`form#'.$node['name'].'`)
-                            .addEventListener("change", e => (
-                                document
-                                    .querySelector(`form#'.$node['name'].'`)
-                                    .setAttribute("cost", "0"),
-                                document
-                                    .querySelectorAll(`form#'.$node['name'].'>div`)
-                                    .forEach(div =>
-                                        document.querySelector(`form#'.$node['name'].'`).attributes.cost.value = 
-                                            (Number(document.querySelector(`form#'.$node['name'].'`).attributes.cost.value) || 0) + 
-                                            (Number(div.attributes.cost?.value) || 0)
-                                    ),
-                                document
-                                    .querySelector(`form#'.$node['name'].'>button`).innerHTML = [
-                                        document.querySelector(`form#'.$node['name'].'>button[name="submit"]`).attributes.text.value,
-                                        document.querySelector(`form#'.$node['name'].'`).attributes.cost.value
-                                    ].join(` `)
-                            ))
+                        .addEventListener("change", e => (
+                            document
+                                .querySelector(`form#'.$node['name'].'`)
+                                .setAttribute("cost", "0"),
+                            document
+                                .querySelectorAll(`form#'.$node['name'].'>div`)
+                                .forEach(div =>
+                                    document.querySelector(`form#'.$node['name'].'`).attributes.cost.value = 
+                                        (Number(document.querySelector(`form#'.$node['name'].'`).attributes.cost.value) || 0) + 
+                                        (Number(div.attributes.cost?.value) || 0)
+                                ),
+                            document
+                                .querySelector(`form#'.$node['name'].'>button`).innerHTML = [
+                                    document.querySelector(`form#'.$node['name'].'>button[name="submit"]`).attributes.text.value,
+                                    document.querySelector(`form#'.$node['name'].'`).attributes.cost.value
+                                ].join(` `)
+                        ))
                     document
                         .querySelector(`form#'.$node['name'].'`)
                         .dispatchEvent(new Event("change"))    
@@ -86,18 +86,18 @@ function render_node($node){
                         )))    
                     document
                         .querySelector(`div#'.$node['name'].'`)
-                            .addEventListener("change", e => (
-                                document
-                                    .querySelector(`div#'.$node['name'].'`)
-                                    .setAttribute("cost", "0"),
-                                document
-                                    .querySelectorAll(`div#'.$node['name'].'>div`)
-                                    .forEach(div =>
-                                        document.querySelector(`div#'.$node['name'].'`).attributes.cost.value = 
-                                            (Number(document.querySelector(`div#'.$node['name'].'`).attributes.cost.value) || 0) + 
-                                            (Number(div.attributes.cost?.value) || 0)
-                                    )
-                            ))
+                        .addEventListener("change", e => (
+                            document
+                                .querySelector(`div#'.$node['name'].'`)
+                                .setAttribute("cost", "0"),
+                            document
+                                .querySelectorAll(`div#'.$node['name'].'>div`)
+                                .forEach(div =>
+                                    document.querySelector(`div#'.$node['name'].'`).attributes.cost.value = 
+                                        (Number(document.querySelector(`div#'.$node['name'].'`).attributes.cost.value) || 0) + 
+                                        (Number(div.attributes.cost?.value) || 0)
+                                )
+                        ))
                     document
                         .querySelector(`div#'.$node['name'].'`)
                         .dispatchEvent(new Event("change"))    
