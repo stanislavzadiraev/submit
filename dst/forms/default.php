@@ -137,7 +137,14 @@ return [
                                 'value' => '',
                                 'placeholder' => 'Введите фамилию',
                                 'required' => true
-                            ],                          
+                            ],
+                            [
+                                'name' => 'check_last',
+                                'label' => 'Необязательно и платно',
+                                'type' => 'check',
+                                'value' => 100,
+                                'state' => 'true',
+                            ]                                                 
                         ]
                     ]
                 ]
