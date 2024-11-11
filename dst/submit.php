@@ -195,14 +195,27 @@ function render_node($node){
             '</div>';
 }
 
+
+function render_check($node){
+    return implode(array_map(
+        function($key, $value) {
+            return '<div>'.$key.$value.'</div>';
+        },
+        array_keys($_POST),
+        array_values($_POST)
+    ));
+}
+
 add_shortcode(
     'submit',
-    function ($atts) {
-        $atts = shortcode_atts(array('form' => ''), $atts);
-        $node = include plugin_dir_path(__FILE__) . 'forms/' . $atts['form'];
-
-        return render_node($node);
-    }
+    [
+        'GET' => function ($atts) {
+            return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
+        },
+        'POST' => function ($atts) {
+            return render_check(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
+        }
+    ][$_SERVER['REQUEST_METHOD']]
 );
  
 ?>
