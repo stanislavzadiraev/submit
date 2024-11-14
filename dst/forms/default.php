@@ -31,7 +31,7 @@ return [
                 'placeholder' => 'Введите отчество',
                 'required' => true
             ],
-            'state' => 'false',
+            'state' => 'true',
         ],        
         [
             'name' => 'check_one',
@@ -124,14 +124,14 @@ return [
                         'type' => 'node',
                         'value' => [
                             [
-                                'name' => 'first_name',
+                                'name' => 'other_first_name',
                                 'label' => 'Еще Имя',
                                 'type' => 'text',
                                 'value' => 'Какое-то Имя',
                                 'required' => false
                             ],
                             [
-                                'name' => 'third_name',
+                                'name' => 'other_third_name',
                                 'label' => 'Еще Фамилия',
                                 'type' => 'text',
                                 'value' => '',
