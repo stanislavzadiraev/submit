@@ -155,7 +155,7 @@ function render_node($node){
                                     div.style.display = "none"
                                 ),
                             document
-                                .querySelector(`div#div-'.$node['name'].'>#${e.target.value}, div#div-'.$node['name'].'>#div-${e.target.value}`)
+                                .querySelector(`div#div-'.$node['name'].'>#div-${e.target.value}`)
                                 .style.display  = "revert"
                         ))
 
@@ -195,7 +195,7 @@ function render_node($node){
                                     document.querySelector(`div#div-${e.target.attributes.value.value}`)?.attributes?.cost?.value ||
                                     0,
                             document
-                                .querySelector(`div#'.A($node['value'])['name'].', div#div-'.A($node['value'])['name'].'`)
+                                .querySelector(`div#div-'.A($node['value'])['name'].'`)
                                 .style.display = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined
                         ))
 
