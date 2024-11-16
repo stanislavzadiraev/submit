@@ -61,11 +61,11 @@ return [
                         'value' => 100
                     ],
                     [
-                        'name' => 'ceck_select_parent_text',
+                        'name' => 'ceck_select_value',
                         'value' => 100
                     ],
                     [                
-                        'name' => 'ceck_select_child_text',
+                        'name' => 'ceck_select_text',
                         'label' => 'Чек Селект Текст',
                         'value' => [  
                             'name' => 'ceck_select_child_text',
@@ -76,7 +76,7 @@ return [
                         ]
                     ],
                     [
-                        'name' => 'ceck_select_child_check_void',
+                        'name' => 'ceck_select_check_void',
                         'label' => 'Чек Селект Чек Войд',
                         'value' => [ 
                             'name' => 'ceck_select_child_check_void',
@@ -87,7 +87,7 @@ return [
                         ]
                     ],
                     [
-                        'name' => 'ceck_select_child_check_cost',
+                        'name' => 'ceck_select_check_cost',
                         'label' => 'Чек Селект Чек Кост',
                         'value' => [ 
                             'name' => 'ceck_select_child_check_cost',
@@ -98,10 +98,10 @@ return [
                         ]
                     ],
                     [
-                        'name' => 'ceck_select_child_div',
+                        'name' => 'ceck_select_div',
                         'label' => 'Чек Селект Див',
                         'value' => [
-                            'name' => 'ceck_select_child_div',
+                            'name' => 'ceck_select_div',
                             'label' => 'Чек Селект Див',
                             'type' => 'node',
                             'value' => [
