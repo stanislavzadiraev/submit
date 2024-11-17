@@ -113,7 +113,12 @@ function render_node($node){
                 '<input type="text"'.
                     ' id="'.$node['name'].
                     '" name="'.$node['name'].
-                    '" value="'.$node['value'].
+                    '" value="'.
+                    [
+                        'GET'=> $node['value'],
+                        'POST' => $_POST[$node['name']]
+                    ]
+                    [$_SERVER['REQUEST_METHOD']].
                     '" placeholder="'.$node['placeholder'].
                 '" >'.
             '</div>';
