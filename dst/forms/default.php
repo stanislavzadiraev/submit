@@ -68,7 +68,7 @@ return [
                         'name' => 'ceck_select_text',
                         'label' => 'Чек Селект Текст',
                         'value' => [  
-                            'name' => 'ceck_select_child_text',
+                            'name' => 'ceck_select_text',
                             'label' => 'Чек Селект Текст',
                             'type' => 'text',
                             'placeholder' => 'Введите Текст',
@@ -79,7 +79,7 @@ return [
                         'name' => 'ceck_select_check_void',
                         'label' => 'Чек Селект Чек Войд',
                         'value' => [ 
-                            'name' => 'ceck_select_child_check_void',
+                            'name' => 'ceck_select_check_void',
                             'label' => 'Чек Селект Чек Войд',
                             'type' => 'check',
                             'state' => 'false',
@@ -90,7 +90,7 @@ return [
                         'name' => 'ceck_select_check_cost',
                         'label' => 'Чек Селект Чек Кост',
                         'value' => [ 
-                            'name' => 'ceck_select_child_check_cost',
+                            'name' => 'ceck_select_check_cost',
                             'label' => 'Чек Селект Кост',
                             'type' => 'check',
                             'value' => 100,
