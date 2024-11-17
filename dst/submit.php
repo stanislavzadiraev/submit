@@ -110,69 +110,30 @@ function render_node($node){
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
                 '<label for="'.$node['name'].'" >'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
-                '<input id="'.$node['name'].'" name="'.$node['name'].'" type="text"'.' value="'.$node['value'].'" placeholder="'.$node['placeholder'].'" >'.
-            '</div>';
-
-
-    else if ($node['type'] == 'select')
-        return
-            '<div id="div-'.$node['name'].'" cost="0">'.
-                '<label for="'.$node['name'].'">'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
-                '<select id="'.$node['name'].'" name="'.$node['name'].'" state="'.$node['state'].'">'.
-                    implode(array_map(
-                        function($node){
-                            return '<option value="'.$node['name'].'"cost="'.V($node['value']).'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
-                        },
-                        $node['value']
-                    )).
-                '</select>'.
-                implode(array_map(
-                    function($node){
-                        return render_node(A($node['value']));
-                    },
-                    $node['value']
-                )).
-                '<script>
-                    document
-                        .querySelectorAll(`div#div-'.$node['name'].'>div`)
-                        .forEach(div => div.addEventListener("change", e => (
-                            document
-                                .querySelector(`div#div-'.$node['name'].'>select`)
-                                .dispatchEvent(new Event("change"))
-                        )))
-
-                    document
-                        .querySelector(`div#div-'.$node['name'].'>select`)
-                        .addEventListener("change", e => (
-                            e.target.attributes.state.value = e.target.value,
-                            e.target.parentElement.attributes.cost.value =
-                                document.querySelector(`option[value="${e.target.attributes.state.value}"]`)?.attributes?.cost?.value ||
-                                document.querySelector(`div#div-${e.target.attributes.state.value}`)?.attributes?.cost?.value ||
-                                0,
-                            document
-                                .querySelectorAll(`div#div-'.$node['name'].'>div`)
-                                .forEach(div =>
-                                    div.style.display = "none"
-                                ),
-                            document
-                                .querySelector(`div#div-'.$node['name'].'>#div-${e.target.value}`)
-                                .style.display  = "revert"
-                        ))
-
-                    document
-                        .querySelector(`div#div-'.$node['name'].'>select`)
-                        .value = document.querySelector(`div#div-'.$node['name'].'>select`).attributes.state.value || 0
-                    document
-                        .querySelector(`div#div-'.$node['name'].'>select`)
-                        .dispatchEvent(new Event("change"))
-                </script>'.              
+                '<input type="text"'.
+                    ' id="'.$node['name'].
+                    '" name="'.$node['name'].
+                    '" value="'.$node['value'].
+                    '" placeholder="'.$node['placeholder'].
+                '" >'.
             '</div>';
 
 
     else if ($node['type'] == 'check')
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
-                '<input type="checkbox"'.' id="'.$node['name'].'" name="'.$node['name'].'" state="'.$node['state'].'" cost="'.V($node['value']).'" value="'.S($node['value']['name']).'">'.'&nbsp;'.
+                '<input type="checkbox"'.
+                    ' id="'.$node['name'].
+                    '" name="'.$node['name'].
+                    '" value="'.S($node['value']['name']).
+                    '" state="'.
+                        [
+                            'GET'=> $node['state'],
+                            'POST' => var_export(array_key_exists($node['name'], $_POST),true)
+                        ]
+                        [$_SERVER['REQUEST_METHOD']].
+                    '" cost="'.V($node['value']).
+                '">'.'&nbsp;'.
                 '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.implode(' ', [R($node['required']), S($node['label'])]).'</label>'.
                 render_node(A($node['value'])).
                 '<script>
@@ -208,7 +169,70 @@ function render_node($node){
                 </script>'.
             '</div>';
 
-    else
+        else if ($node['type'] == 'select')
+            return
+                '<div id="div-'.$node['name'].'" cost="0">'.
+                    '<label for="'.$node['name'].'">'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
+                    '<select'.
+                        ' id="'.$node['name'].
+                        '" name="'.$node['name'].
+                        '" state="'.
+                        [
+                            'GET'=> $node['state'],
+                            'POST' => $_POST[$node['name']]
+                        ]
+                        [$_SERVER['REQUEST_METHOD']].
+                    '">'.
+                        implode(array_map(
+                            function($node){
+                                return '<option value="'.$node['name'].'"cost="'.V($node['value']).'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
+                            },
+                            $node['value']
+                        )).
+                    '</select>'.
+                    implode(array_map(
+                        function($node){
+                            return render_node(A($node['value']));
+                        },
+                        $node['value']
+                    )).
+                    '<script>
+                        document
+                            .querySelectorAll(`div#div-'.$node['name'].'>div`)
+                            .forEach(div => div.addEventListener("change", e => (
+                                document
+                                    .querySelector(`div#div-'.$node['name'].'>select`)
+                                    .dispatchEvent(new Event("change"))
+                            )))
+    
+                        document
+                            .querySelector(`div#div-'.$node['name'].'>select`)
+                            .addEventListener("change", e => (
+                                e.target.attributes.state.value = e.target.value,
+                                e.target.parentElement.attributes.cost.value =
+                                    document.querySelector(`option[value="${e.target.attributes.state.value}"]`)?.attributes?.cost?.value ||
+                                    document.querySelector(`div#div-${e.target.attributes.state.value}`)?.attributes?.cost?.value ||
+                                    0,
+                                document
+                                    .querySelectorAll(`div#div-'.$node['name'].'>div`)
+                                    .forEach(div =>
+                                        div.style.display = "none"
+                                    ),
+                                document
+                                    .querySelector(`div#div-'.$node['name'].'>#div-${e.target.value}`)
+                                    .style.display  = "revert"
+                            ))
+    
+                        document
+                            .querySelector(`div#div-'.$node['name'].'>select`)
+                            .value = document.querySelector(`div#div-'.$node['name'].'>select`).attributes.state.value || 0
+                        document
+                            .querySelector(`div#div-'.$node['name'].'>select`)
+                            .dispatchEvent(new Event("change"))
+                    </script>'.              
+                '</div>';
+
+            else
         return 
             '<div>'.
                 '(some shit)'.
@@ -233,7 +257,7 @@ add_shortcode(
             return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         },
         'POST' => function ($atts) {
-            return render_check(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
+            return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
