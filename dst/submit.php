@@ -32,10 +32,12 @@ function render_node($node){
 
     else if ($node['type'] == 'form')
         return
-            '<form id="div-'.$node['name'].'" name="'.$node['name'].'" cost="0" method="post">'.
+            '<div id="div-'.$node['name'].'" cost="0">'.
+            '<form name="'.$node['name'].'" method="post">'.
                 '<div>'.$node['label'].'</div>'.
                     implode(array_map('render_node', $node['value'])).
                 '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
+                
                 '<style>
                     div:has(>input[type=text])>label:after {content: " ";}                
                     div:has(>input[type=text][required])>label:after {content: " * ";}
@@ -46,62 +48,65 @@ function render_node($node){
                     div:has(>select)>label:after {content: " ";}                
                     div:has(>select[required])>label:after {content: " * ";}
                 </style>'.
+                
                 '<script>
                     document
-                        .querySelectorAll(`form#div-'.$node['name'].'>div`)
+                        .querySelectorAll(`div#div-'.$node['name'].'>form>div`)
                         .forEach(div => div.addEventListener("change", e => (
                             document
-                                .querySelector(`form#div-'.$node['name'].'`)
+                                .querySelector(`div#div-'.$node['name'].'>form`)
                                 .dispatchEvent(new Event("change"))
                         )))
 
                     document
-                        .querySelector(`form#div-'.$node['name'].'`)
+                        .querySelector(`div#div-'.$node['name'].'>form`)
                         .addEventListener("change", e => (
                             document
-                                .querySelector(`form#div-'.$node['name'].'`).attributes.cost.value = 0,
+                                .querySelector(`div#div-'.$node['name'].'`).attributes.cost.value = 0,
                             document
-                                .querySelectorAll(`form#div-'.$node['name'].'>div`)
+                                .querySelectorAll(`div#div-'.$node['name'].'>form>div`)
                                 .forEach(div =>
-                                    document.querySelector(`form#div-'.$node['name'].'`).attributes.cost.value = 
-                                        (Number(document.querySelector(`form#div-'.$node['name'].'`).attributes.cost.value) || 0) + 
+                                    document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value = 
+                                        (Number(document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value) || 0) + 
                                         (Number(div.attributes.cost?.value) || 0)
                                 ),
                             document
-                                .querySelector(`form#div-'.$node['name'].'>button`).innerHTML = [
-                                    document.querySelector(`form#div-'.$node['name'].'>button[name="submit"]`).attributes.text.value,
-                                    document.querySelector(`form#div-'.$node['name'].'`).attributes.cost.value
+                                .querySelector(`div#div-'.$node['name'].'>form>button`).innerHTML = [
+                                    document.querySelector(`div#div-'.$node['name'].'>form>button[name="submit"]`).attributes.text.value,
+                                    document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value
                                 ].join(` `)
                         ))
 
                     document
-                        .querySelector(`form#div-'.$node['name'].'`)
+                        .querySelector(`div#div-'.$node['name'].'>form`)
                         .dispatchEvent(new Event("change"))    
                 </script>'. 
-            '</form>';
+            '</form>'.
+            '</div>';
 
 
     else if ($node['type'] == 'node')            
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
+            '<fieldset>'.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).
                 '<script>
                     document
-                        .querySelectorAll(`div#div-'.$node['name'].'>div`)
+                        .querySelectorAll(`div#div-'.$node['name'].'>fieldset>div`)
                         .forEach(div => div.addEventListener("change", e => (
                             document
-                                .querySelector(`div#div-'.$node['name'].'`)
+                                .querySelector(`div#div-'.$node['name'].'>fieldset`)
                                 .dispatchEvent(new Event("change"))
                         )))
 
                     document
-                        .querySelector(`div#div-'.$node['name'].'`)
+                        .querySelector(`div#div-'.$node['name'].'>fieldset`)
                         .addEventListener("change", e => (
                             document
                                 .querySelector(`div#div-'.$node['name'].'`).attributes.cost.value = 0,
                             document
-                                .querySelectorAll(`div#div-'.$node['name'].'>div`)
+                                .querySelectorAll(`div#div-'.$node['name'].'>fieldset>div`)
                                 .forEach(div =>
                                     document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value = 
                                         (Number(document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value) || 0) + 
@@ -110,9 +115,10 @@ function render_node($node){
                         ))
 
                     document
-                        .querySelector(`div#div-'.$node['name'].'`)
-                        .dispatchEvent(new Event("change"))    
+                        .querySelector(`div#div-'.$node['name'].'>fieldset`)
+                        .dispatchEvent(new Event("change"))
                 </script>'.
+            '</fieldset>'.    
             '</div>';
 
 
