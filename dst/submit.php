@@ -6,7 +6,7 @@
  */
 
 function R($r){
-    if ($r) return '*';
+    if ($r) return 'required';
     else return '';
 }
 
@@ -36,6 +36,16 @@ function render_node($node){
                 '<div>'.$node['label'].'</div>'.
                     implode(array_map('render_node', $node['value'])).
                 '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
+                '<style>
+                    div:has(>input[type=text])>label:after {content: " ";}                
+                    div:has(>input[type=text][required])>label:after {content: " * ";}
+
+                    div:has(>input[type=checkbox])>label:before {content: " ";}                        
+                    div:has(>input[type=checkbox][required])>label:before {content: " * ";}
+                    
+                    div:has(>select)>label:after {content: " ";}                
+                    div:has(>select[required])>label:after {content: " * ";}
+                </style>'.
                 '<script>
                     document
                         .querySelectorAll(`form#div-'.$node['name'].'>div`)
@@ -109,37 +119,40 @@ function render_node($node){
     else if ($node['type'] == 'text')
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
-                '<label for="'.$node['name'].'" >'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
-                '<input type="text"'.
-                    ' id="'.$node['name'].
-                    '" name="'.$node['name'].
-                    '" value="'.
-                    [
-                        'GET'=> $node['value'],
-                        'POST' => $_POST[$node['name']]
-                    ]
-                    [$_SERVER['REQUEST_METHOD']].
-                    '" placeholder="'.$node['placeholder'].
-                '" >'.
+                '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+                '<input type="text" '.
+                    'id="'.$node['name'].'" '.
+                    'name="'.$node['name'].'" '.
+                        R($node['required']).' '.
+                        'value="'.
+                        [
+                            'GET'=> $node['value'],
+                            'POST' => $_POST[$node['name']]
+                        ]
+                        [$_SERVER['REQUEST_METHOD']].
+                    '" '.
+                    '" placeholder="'.$node['placeholder'].'" '.
+                '>'.
             '</div>';
 
 
     else if ($node['type'] == 'check')
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
-                '<input type="checkbox"'.
-                    ' id="'.$node['name'].
-                    '" name="'.$node['name'].
-                    '" value="'.S($node['value']['name']).
-                    '" state="'.
+                '<input type="checkbox" '.
+                    'id="'.$node['name'].'" '.
+                    'name="'.$node['name'].'" '.
+                    R($node['required']).' '.
+                    'value="'.S($node['value']['name']).'" '.
+                    'state="'.
                         [
                             'GET'=> $node['state'],
                             'POST' => var_export(array_key_exists($node['name'], $_POST),true)
                         ]
-                        [$_SERVER['REQUEST_METHOD']].
-                    '" cost="'.V($node['value']).
-                '">'.'&nbsp;'.
-                '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.implode(' ', [R($node['required']), S($node['label'])]).'</label>'.
+                        [$_SERVER['REQUEST_METHOD']].'" '.
+                    'cost="'.V($node['value']).'" '.
+                '">'.
+                '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.S($node['label']).'</label>'.
                 render_node(A($node['value'])).
                 '<script>
                     document
@@ -177,7 +190,7 @@ function render_node($node){
         else if ($node['type'] == 'select')
             return
                 '<div id="div-'.$node['name'].'" cost="0">'.
-                    '<label for="'.$node['name'].'">'.implode(' ', [S($node['label']), R($node['required'])]).'</label>'.'&nbsp;'.
+                    '<label for="'.$node['name'].'">'.S($node['label']).'</label>'.
                     '<select'.
                         ' id="'.$node['name'].
                         '" name="'.$node['name'].
