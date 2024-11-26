@@ -180,17 +180,12 @@ function render_node($node){
                             document
                                 .querySelector(`div#div-'.A($node['value'])['name'].'`)
                                 .style.display = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined,
-                            
                             e.target.checked == false && document
                                 .querySelectorAll(`div#div-'.A($node['value'])['name'].'>*`)
-                                .forEach(div =>
-                                    div.setAttribute("disabled", "")
-                                ) ||
+                                .forEach(div => div.setAttribute("disabled", "")) ||
                             e.target.checked == true && document
                                 .querySelectorAll(`div#div-'.A($node['value'])['name'].'>*`)
-                                .forEach(div =>
-                                    div.removeAttribute("disabled") 
-                                )
+                                .forEach(div => div.removeAttribute("disabled"))
                         ))
 
                     document
@@ -217,10 +212,11 @@ function render_node($node){
                         [$_SERVER['REQUEST_METHOD']].
                     '">'.
                         implode(array_map(
-                            function($node){
-                                return '<option value="'.$node['name'].'"cost="'.V($node['value']).'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
+                            function($name, $node){
+                                return '<option value="'.$name.'"cost="'.V($node['value']).'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
                             },
-                            $node['value']
+                            array_keys($node['value']),
+                            array_values($node['value'])
                         )).
                     '</select>'.
                     implode(array_map(
@@ -248,22 +244,16 @@ function render_node($node){
                                     0,
                                 document
                                     .querySelectorAll(`div#div-'.$node['name'].'>div`)
-                                    .forEach(div =>
-                                        div.style.display = "none"
-                                    ),
+                                    .forEach(div => div.style.display = "none"),
                                 document
                                     .querySelectorAll(`div#div-'.$node['name'].'>div>*`)
-                                    .forEach(div =>
-                                        div.setAttribute("disabled", "")
-                                    ),
+                                    .forEach(div => div.setAttribute("disabled", "")),
                                 document
                                     .querySelector(`div#div-'.$node['name'].'>#div-${e.target.value}`)
                                     .style.display  = "revert",
                                 document
                                     .querySelectorAll(`div#div-'.$node['name'].'>#div-${e.target.value}>*`)
-                                    .forEach(div =>
-                                        div.removeAttribute("disabled")
-                                    )
+                                    .forEach(div => div.removeAttribute("disabled"))
                             ))
     
                         document
@@ -283,14 +273,39 @@ function render_node($node){
 }
 
 
-function render_check($node){
-    return implode(array_map(
-        function($key, $value) {
-            return '<div>'.$key.' - '. $value.'</div>';
-        },
-        array_keys($_POST),
-        array_values($_POST)
-    ));
+function render_form($node){
+    if ($node == null)
+        return '';
+
+
+    else if ($node['type'] == 'form')
+        return
+            implode(array_map('render_form', $node['value']));
+
+
+    else if ($node['type'] == 'node')            
+        return
+            implode(array_map('render_form', $node['value']));
+
+
+    else if ($node['type'] == 'text' && array_key_exists($node['name'], $_POST))
+        return
+            '<div>'.$node['label'].' - '. $_POST[$node['name']].'</div>';
+
+
+    else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST))
+        return
+            '<div>'.$node['label'].'</div>'.
+            render_form(A($node['value']));
+
+
+    else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST))
+        return
+            '<div>'.$node['label'].
+            ' - '.
+            $node['value'][$_POST[$node['name']]]['label'].
+            '</div>'.
+            render_form(A($node['value'][$_POST[$node['name']]]['value']));
 }
 
 add_shortcode(
@@ -300,7 +315,9 @@ add_shortcode(
             return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         },
         'POST' => function ($atts) {
-            return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
+            
+            return render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']).
+                render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         }
     ][$_SERVER['REQUEST_METHOD']]
 );

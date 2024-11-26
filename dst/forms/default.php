@@ -48,24 +48,20 @@ return [
                 'label' => 'Чек Селект',
                 'type' => 'select',
                 'value' => [
-                    [
-                        'name' => 'ceck_select_empty',
+                    'ceck_select_empty' => [
+                        
                     ],
-                    [
-                        'name' => 'ceck_select_label',
+                    'ceck_select_label' => [
                         'label' => 'Метка'
                     ],
-                    [
-                        'name' => 'ceck_select_label_value',
+                    'ceck_select_label_value' => [
                         'label' => 'Метка',
                         'value' => 100
                     ],
-                    [
-                        'name' => 'ceck_select_value',
+                    'ceck_select_value' => [                        
                         'value' => 100
                     ],
-                    [                
-                        'name' => 'ceck_select_text',
+                    'ceck_select_text' => [                
                         'label' => 'Чек Селект Текст',
                         'value' => [  
                             'name' => 'ceck_select_text',
@@ -75,8 +71,7 @@ return [
                             'required' => true
                         ]
                     ],
-                    [
-                        'name' => 'ceck_select_check_void',
+                    'ceck_select_check_void' => [
                         'label' => 'Чек Селект Чек Войд',
                         'value' => [ 
                             'name' => 'ceck_select_check_void',
@@ -86,8 +81,7 @@ return [
                             'required' => true
                         ]
                     ],
-                    [
-                        'name' => 'ceck_select_check_cost',
+                    'ceck_select_check_cost' => [
                         'label' => 'Чек Селект Чек Кост',
                         'value' => [ 
                             'name' => 'ceck_select_check_cost',
@@ -97,8 +91,7 @@ return [
                             'state' => 'true'
                         ]
                     ],
-                    [
-                        'name' => 'ceck_select_div',
+                    'ceck_select_div' => [
                         'label' => 'Чек Селект Див',
                         'value' => [
                             'name' => 'ceck_select_div',
