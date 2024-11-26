@@ -34,10 +34,6 @@ function render_node($node){
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
             '<form name="'.$node['name'].'" method="post">'.
-                '<div>'.$node['label'].'</div>'.
-                    implode(array_map('render_node', $node['value'])).
-                '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
-                
                 '<style>
                     div:has(>input[type=text])>label:after {content: " ";}                
                     div:has(>input[type=text][required])>label:after {content: " * ";}
@@ -48,7 +44,9 @@ function render_node($node){
                     div:has(>select)>label:after {content: " ";}                
                     div:has(>select[required])>label:after {content: " * ";}
                 </style>'.
-                
+                '<div>'.$node['label'].'</div>'.
+                implode(array_map('render_node', $node['value'])).                
+                '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
                 '<script>
                     document
                         .querySelectorAll(`div#div-'.$node['name'].'>form>div`)
@@ -181,7 +179,18 @@ function render_node($node){
                                     0,
                             document
                                 .querySelector(`div#div-'.A($node['value'])['name'].'`)
-                                .style.display = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined
+                                .style.display = e.target.checked == false && "none" || e.target.checked == true && "revert" || undefined,
+                            
+                            e.target.checked == false && document
+                                .querySelectorAll(`div#div-'.A($node['value'])['name'].'>*`)
+                                .forEach(div =>
+                                    div.setAttribute("disabled", "")
+                                ) ||
+                            e.target.checked == true && document
+                                .querySelectorAll(`div#div-'.A($node['value'])['name'].'>*`)
+                                .forEach(div =>
+                                    div.removeAttribute("disabled") 
+                                )
                         ))
 
                     document
@@ -243,8 +252,18 @@ function render_node($node){
                                         div.style.display = "none"
                                     ),
                                 document
+                                    .querySelectorAll(`div#div-'.$node['name'].'>div>*`)
+                                    .forEach(div =>
+                                        div.setAttribute("disabled", "")
+                                    ),
+                                document
                                     .querySelector(`div#div-'.$node['name'].'>#div-${e.target.value}`)
-                                    .style.display  = "revert"
+                                    .style.display  = "revert",
+                                document
+                                    .querySelectorAll(`div#div-'.$node['name'].'>#div-${e.target.value}>*`)
+                                    .forEach(div =>
+                                        div.removeAttribute("disabled")
+                                    )
                             ))
     
                         document
