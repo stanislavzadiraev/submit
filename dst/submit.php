@@ -283,19 +283,19 @@ function render_form($node){
             '<div id="fin-'.$node['name'].'">'.
                 '<style>
                     div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
-                    div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.amount { font-weight: bold; }
+                    div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total { font-weight: bold; }
                 </style>'.
                 implode(array_map('render_form', $node['value'])).
                 '<div>'.
                     '<span class="label">'.'Итого'.'</span>'.
-                    '<span class="amount">'.'0'.'</span>'.
+                    '<span class="total">'.'0'.'</span>'.
                 '</div>'.
                 '<script>
                     document
                         .querySelectorAll(`div#fin-'.$node['name'].'>div>span.cost`)
                         .forEach(span =>
-                            document.querySelector(`div#fin-'.$node['name'].'>div>span.amount`).innerHTML = 
-                                Number(document.querySelector(`div#fin-'.$node['name'].'>div>span.amount`).innerHTML) +
+                            document.querySelector(`div#fin-'.$node['name'].'>div>span.total`).innerHTML = 
+                                Number(document.querySelector(`div#fin-'.$node['name'].'>div>span.total`).innerHTML) +
                                 Number(span.innerHTML)
                         )
                 </script>'.
@@ -327,7 +327,7 @@ function render_form($node){
     else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST))
         return
             '<div>'.$node['label'].
-                '<span class="cost">'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
+                '<span>'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
                 '<span class="cost">'.V($node['value'][$_POST[$node['name']]]['value']).'</span>'.
             '</div>'.
             render_form(A($node['value'][$_POST[$node['name']]]['value']));
@@ -340,7 +340,6 @@ add_shortcode(
             return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         },
         'POST' => function ($atts) {
-            
             return render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         }
     ][$_SERVER['REQUEST_METHOD']]
