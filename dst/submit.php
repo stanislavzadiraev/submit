@@ -280,7 +280,26 @@ function render_form($node){
 
     else if ($node['type'] == 'form')
         return
-            implode(array_map('render_form', $node['value']));
+            '<div id="fin-'.$node['name'].'">'.
+                '<style>
+                    div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
+                    div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.amount { font-weight: bold; }
+                </style>'.
+                implode(array_map('render_form', $node['value'])).
+                '<div>'.
+                    '<span class="label">'.'Итого'.'</span>'.
+                    '<span class="amount">'.'0'.'</span>'.
+                '</div>'.
+                '<script>
+                    document
+                        .querySelectorAll(`div#fin-'.$node['name'].'>div>span.cost`)
+                        .forEach(span =>
+                            document.querySelector(`div#fin-'.$node['name'].'>div>span.amount`).innerHTML = 
+                                Number(document.querySelector(`div#fin-'.$node['name'].'>div>span.amount`).innerHTML) +
+                                Number(span.innerHTML)
+                        )
+                </script>'.
+            '</div>';
 
 
     else if ($node['type'] == 'node')            
@@ -290,20 +309,26 @@ function render_form($node){
 
     else if ($node['type'] == 'text' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.$node['label'].' - '. $_POST[$node['name']].'</div>';
+            '<div>'.
+                '<span>'.$node['label'].'</span>'.
+                '<span>'.$_POST[$node['name']].'</span>'.
+            '</div>';
 
 
     else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.$node['label'].'</div>'.
+            '<div>'.
+                '<span>'.$node['label'].'</span>'.
+                '<span class="cost">'.V($node['value']).'</span>'.
+            '</div>'.
             render_form(A($node['value']));
 
 
     else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST))
         return
             '<div>'.$node['label'].
-            ' - '.
-            $node['value'][$_POST[$node['name']]]['label'].
+                '<span class="cost">'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
+                '<span class="cost">'.V($node['value'][$_POST[$node['name']]]['value']).'</span>'.
             '</div>'.
             render_form(A($node['value'][$_POST[$node['name']]]['value']));
 }
@@ -316,8 +341,7 @@ add_shortcode(
         },
         'POST' => function ($atts) {
             
-            return render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']).
-                render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
+            return render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
