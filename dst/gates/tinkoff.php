@@ -1,7 +1,11 @@
 <?php
 
-return function($name){
-    return $name;
+return function($form){
+    return 
+        $form.
+        '<div id="pay-tinkoff">'.
+            'SOME SHIT'.
+        '</div>';
 }
 
 ?>

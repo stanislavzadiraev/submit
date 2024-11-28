@@ -340,8 +340,10 @@ add_shortcode(
             return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         },
         'POST' => function ($atts) {
-            return render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']).
-            (include plugin_dir_path(__FILE__) . 'gates/' . 'tinkoff.php')('SOME SHIT');
+            return
+            (include plugin_dir_path(__FILE__) . 'gates/' . 'tinkoff.php')(
+                render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form'])
+            );
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
