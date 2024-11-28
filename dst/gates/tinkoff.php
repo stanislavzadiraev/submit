@@ -11,7 +11,7 @@ return function($form){
             '<input type="hidden" name="language" value="ru">'.
             
             '<input id="receipt" type="hidden" name="receipt" value="">'.
-            '<input id="amount" type="hidden" name="amount" value="100">'.
+            '<input id="amount" type="hidden" name="amount" value="1">'.
 
             '<input id="email" type="hidden" name="email" value="q@q.q">'.
             '<input id="phone" type="hidden" name="phone" value="+79998887766">'.

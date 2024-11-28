@@ -13,6 +13,20 @@ return [
             'required' => true
         ],
         [
+            'name' => 'email',
+            'label' => 'Почта',
+            'type' => 'email',
+            'value' => '',
+            'required' => true
+        ],
+        [
+            'name' => 'phone',
+            'label' => 'Телефон',
+            'type' => 'phone',
+            'value' => '',
+            'required' => true
+        ],
+        [
             'name' => 'check_void',
             'label' => 'Чек Войд',
             'type' => 'check',

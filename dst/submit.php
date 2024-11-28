@@ -139,6 +139,42 @@ function render_node($node){
                 '>'.
             '</div>';
 
+        else if ($node['type'] == 'email')
+            return
+                '<div id="div-'.$node['name'].'" cost="0">'.
+                    '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+                    '<input type="email" '.
+                        'id="'.$node['name'].'" '.
+                        'name="'.$node['name'].'" '.
+                            R($node['required']).' '.
+                            'value="'.
+                            [
+                                'GET'=> $node['value'],
+                                'POST' => $_POST[$node['name']]
+                            ]
+                            [$_SERVER['REQUEST_METHOD']].
+                        '" '.
+                    '>'.
+                '</div>';
+
+
+        else if ($node['type'] == 'phone')
+                return
+                    '<div id="div-'.$node['name'].'" cost="0">'.
+                        '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+                        '<input type="tel" '.
+                            'id="'.$node['name'].'" '.
+                            'name="'.$node['name'].'" '.
+                                R($node['required']).' '.
+                                'value="'.
+                                [
+                                    'GET'=> $node['value'],
+                                    'POST' => $_POST[$node['name']]
+                                ]
+                                [$_SERVER['REQUEST_METHOD']].
+                            '" '.
+                        '>'.
+                    '</div>';
 
     else if ($node['type'] == 'check')
         return
@@ -314,6 +350,19 @@ function render_form($node){
                 '<span>'.$_POST[$node['name']].'</span>'.
             '</div>';
 
+    else if ($node['type'] == 'email' && array_key_exists($node['name'], $_POST))
+        return
+            '<div>'.
+                '<span>'.$node['label'].'</span>'.
+                '<span>'.$_POST[$node['name']].'</span>'.
+            '</div>';
+
+    else if ($node['type'] == 'phone' && array_key_exists($node['name'], $_POST))
+        return
+            '<div>'.
+                '<span>'.$node['label'].'</span>'.
+                '<span>'.$_POST[$node['name']].'</span>'.
+            '</div>';
 
     else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST))
         return
