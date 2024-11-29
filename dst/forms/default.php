@@ -62,8 +62,8 @@ return [
                 'label' => 'Чек Селект',
                 'type' => 'select',
                 'value' => [
-                    'ceck_select_empty' => [
-                        
+                    '' => [
+                        'disabled' => true
                     ],
                     'ceck_select_label' => [
                         'label' => 'Метка'
@@ -152,7 +152,8 @@ return [
                         ]
                     ]
                 ],
-                'state' => 'eck_select_label_value'
+                'required' => true,
+                'state' => 'ceck_select_empty'
             ],
             'state' => 'false',       
         ]     

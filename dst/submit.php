@@ -10,6 +10,11 @@ function R($r){
     else return '';
 }
 
+function D($r){
+    if ($r) return 'disabled';
+    else return '';
+}
+
 function V($v){
     if (gettype($v) == 'integer') return $v;
     else return '';
@@ -191,7 +196,7 @@ function render_node($node){
                         ]
                         [$_SERVER['REQUEST_METHOD']].'" '.
                     'cost="'.V($node['value']).'" '.
-                '">'.
+                '>'.
                 '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.S($node['label']).'</label>'.
                 render_node(A($node['value'])).
                 '<script>
@@ -238,18 +243,23 @@ function render_node($node){
                 '<div id="div-'.$node['name'].'" cost="0">'.
                     '<label for="'.$node['name'].'">'.S($node['label']).'</label>'.
                     '<select'.
-                        ' id="'.$node['name'].
-                        '" name="'.$node['name'].
-                        '" state="'.
-                        [
-                            'GET'=> $node['state'],
-                            'POST' => $_POST[$node['name']]
-                        ]
-                        [$_SERVER['REQUEST_METHOD']].
-                    '">'.
+                        ' id="'.$node['name'].'" '.
+                        'name="'.$node['name'].'" '.
+                        R($node['required']).' '.
+                        'state="'.
+                            [
+                                'GET'=> $node['state'],
+                                'POST' => $_POST[$node['name']]
+                            ]
+                            [$_SERVER['REQUEST_METHOD']].
+                        '" '.
+                    '>'.
                         implode(array_map(
                             function($name, $node){
-                                return '<option value="'.$name.'"cost="'.V($node['value']).'">'.V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).'</option>';
+                                return 
+                                    '<option value="'.$name.'"cost="'.V($node['value']).'" '.D($node['disabled']).'>'.
+                                        V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).
+                                    '</option>';
                             },
                             array_keys($node['value']),
                             array_values($node['value'])
