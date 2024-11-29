@@ -42,28 +42,6 @@ return function($form){
                             document
                                 .querySelector("div#fin-total>span.total").innerHTML,                    
 
-                    console.log(
-                        Array.from(
-                            document
-                                .querySelectorAll("div[name][cost]")
-                        )
-                        .map(e => ({
-                            name: e.attributes.name.value,
-                            cost: e.attributes.cost.value
-                        }))
-                        .filter(e => e.cost)
-                        .map(({name, cost}) => ({
-                            "Name": name,
-                            "Price": cost * 100,
-                            "Quantity": 1,
-                            "Amount": cost * 100,
-                            "PaymentMethod": "full_prepayment",
-                            "PaymentObject": "service",
-                            "Tax": "none",
-                            "MeasurementUnit": "pc"
-                        }))
-                    ),
-
                     document
                         .querySelector("div#pay-tinkoff>form")
                         .receipt.value = JSON.stringify({
