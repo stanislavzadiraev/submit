@@ -322,7 +322,7 @@ function render_form($node){
                     div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total { font-weight: bold; }
                 </style>'.
                 implode(array_map('render_form', $node['value'])).
-                '<div>'.
+                '<div id="fin-total">'.
                     '<span class="label">'.'Итого'.'</span>'.
                     '<span class="total">'.'0'.'</span>'.
                 '</div>'.
@@ -345,29 +345,29 @@ function render_form($node){
 
     else if ($node['type'] == 'text' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.
-                '<span>'.$node['label'].'</span>'.
-                '<span>'.$_POST[$node['name']].'</span>'.
+            '<div id="fin-'.$node['name'].'">'.
+                '<span class="name">'.$node['label'].'</span>'.
+                '<span class="text">'.$_POST[$node['name']].'</span>'.
             '</div>';
 
     else if ($node['type'] == 'email' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.
-                '<span>'.$node['label'].'</span>'.
-                '<span>'.$_POST[$node['name']].'</span>'.
+            '<div id="fin-'.$node['name'].'">'.
+                '<span class="name">'.$node['label'].'</span>'.
+                '<span class="email">'.$_POST[$node['name']].'</span>'.
             '</div>';
 
     else if ($node['type'] == 'phone' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.
+            '<div id="fin-'.$node['name'].'">'.
                 '<span>'.$node['label'].'</span>'.
-                '<span>'.$_POST[$node['name']].'</span>'.
+                '<span class="phone">'.$_POST[$node['name']].'</span>'.
             '</div>';
 
     else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.
-                '<span>'.$node['label'].'</span>'.
+            '<div id="fin-'.$node['name'].'" name="'.$node['label'].'" cost="'.V($node['value']).'">'.
+                '<span class="name">'.$node['label'].'</span>'.
                 '<span class="cost">'.V($node['value']).'</span>'.
             '</div>'.
             render_form(A($node['value']));
@@ -375,8 +375,9 @@ function render_form($node){
 
     else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST))
         return
-            '<div>'.$node['label'].
-                '<span>'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
+            '<div id="fin-'.$node['name'].'" name="'.$node['value'][$_POST[$node['name']]]['label'].'" cost="'.V($node['value'][$_POST[$node['name']]]['value']).'">'.
+                '<span class="that">'.$node['label'].'</span>'.
+                '<span class="name">'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
                 '<span class="cost">'.V($node['value'][$_POST[$node['name']]]['value']).'</span>'.
             '</div>'.
             render_form(A($node['value'][$_POST[$node['name']]]['value']));
