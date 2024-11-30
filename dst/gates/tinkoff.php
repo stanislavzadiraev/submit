@@ -3,7 +3,7 @@
 $terminalkey = '1698927993527';
 $companyemail = 'zadiraeff@yandex.ru';
 
-return function($header, $footer, $terminalkey, $companyemail){
+return function($header, $footer){
     return 
         $header.
         '<div id="pay-tinkoff">'.
