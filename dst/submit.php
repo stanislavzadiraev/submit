@@ -53,9 +53,16 @@ function render_node($node){
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
             '<form name="'.$node['name'].'" method="post">'.
+                '<input type="hidden" name="ID" value="'.ID().'">'.
                 '<style>
                     div:has(>input[type=text])>label:after {content: " ";}                
                     div:has(>input[type=text][required])>label:after {content: " * ";}
+
+                    div:has(>input[type=email])>label:after {content: " ";}                        
+                    div:has(>input[type=email][required])>label:after {content: " * ";}
+
+                    div:has(>input[type=tel])>label:after {content: " ";}                        
+                    div:has(>input[type=tel][required])>label:after {content: " * ";}                    
 
                     div:has(>input[type=checkbox])>label:before {content: " ";}                        
                     div:has(>input[type=checkbox][required])>label:before {content: " * ";}
@@ -65,7 +72,7 @@ function render_node($node){
                 </style>'.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).                
-                '<button type="submit" name="submit" class="button" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
+                '<button type="submit" name="submit" value="" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
                 '<script>
                     document
                         .querySelectorAll(`div#div-'.$node['name'].'>form>div`)
@@ -91,7 +98,10 @@ function render_node($node){
                                 .querySelector(`div#div-'.$node['name'].'>form>button`).innerHTML = [
                                     document.querySelector(`div#div-'.$node['name'].'>form>button[name="submit"]`).attributes.text.value,
                                     document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value
-                                ].join(` `)
+                                ].join(` `),
+                            document
+                                .querySelector(`div#div-'.$node['name'].'>form>button`).attributes.value.value = 
+                                    document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value
                         ))
 
                     document
@@ -105,7 +115,7 @@ function render_node($node){
     else if ($node['type'] == 'node')            
         return
             '<div id="div-'.$node['name'].'" cost="0">'.
-            '<fieldset>'.
+            '<fieldset name="'.$node['name'].'">'.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).
                 '<script>
@@ -346,23 +356,14 @@ function render_form($node){
                     div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
                 </style>'.
                 '<div id="fin-order">'.
-                    '<span class="label">'.'ЗАКАЗ'.'</span>'.
-                    '<span class="order">'.ID().'</span>'.   
+                    '<span class="label">'.'ЗАКАЗ: '.'</span>'.
+                    '<span class="order">'.$_POST['ID'].'</span>'.   
                 '</div>'.
                 implode(array_map('render_form', $node['value'])).
                 '<div id="fin-total">'.
-                    '<span class="label">'.'ИТОГО'.'</span>'.
-                    '<span class="total">'.'0'.'</span>'.
+                    '<span class="label">'.'ИТОГО: '.'</span>'.
+                    '<span class="total">'.$_POST['submit'].'</span>'.
                 '</div>'.
-                '<script>
-                    document
-                        .querySelectorAll(`div#fin-'.$node['name'].'>div>span.cost`)
-                        .forEach(span =>
-                            document.querySelector(`div#fin-'.$node['name'].'>div>span.total`).innerHTML = 
-                                Number(document.querySelector(`div#fin-'.$node['name'].'>div>span.total`).innerHTML) +
-                                Number(span.innerHTML)
-                        )
-                </script>'.
             '</div>';
 
 
@@ -422,7 +423,7 @@ add_shortcode(
             return
                 EMAIL(
                     [$atts['mail'], $_POST['email']],
-                    'ЗАКАЗ',
+                    'ЗАКАЗ: '.$_POST['ID'].' - '.'ИТОГО: '.$_POST['submit'],
                     render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form'])
                 ).
                 (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('', '');
