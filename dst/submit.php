@@ -38,7 +38,7 @@ function ID(){
 }
 
 function EMAIL($target, $subject, $content){
-    if(wp_mail($target, $subject, $content, array('Content-Type: text/html; charset=UTF-8')));
+    wp_mail($target, $subject, $content, array('Content-Type: text/html; charset=UTF-8'));
     
     return $content;
 }
