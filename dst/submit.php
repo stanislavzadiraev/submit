@@ -421,7 +421,7 @@ add_shortcode(
 
             return
                 EMAIL(
-                    [$atts['mail'], $_POST[email]],
+                    [$atts['mail'], $_POST['email']],
                     'ЗАКАЗ',
                     render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form'])
                 ).
