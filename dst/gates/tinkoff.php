@@ -1,29 +1,37 @@
 <?php
 
-return function($form){
+return function($header, $footer, $terminalkey, $companyemail){
     return 
-        $form.
+        $header.
         '<div id="pay-tinkoff">'.
         '<script src="https://securepay.tinkoff.ru/html/payForm/js/tinkoff_v2.js"></script>'.
-        '<form name="pay-tinkoff" >'.
-            '<input type="hidden" name="terminalkey" value="1698927993527">'.
-            '<input type="hidden" name="frame" value="false">'.
-            '<input type="hidden" name="language" value="ru">'.
-            
-            '<input id="receipt" type="hidden" name="receipt" value="">'.
-            '<input id="amount" type="hidden" name="amount" value="100">'.
+        '<form name="pay-tinkoff" >
+            <input type="hidden" name="terminalkey" value="'.$terminalkey.'">
+            <input type="hidden" name="frame" value="false">
+            <input type="hidden" name="language" value="ru">
 
-            '<input id="email" type="hidden" name="email" value="">'.
-            '<input id="phone" type="hidden" name="phone" value="">'.
+            <input type="hidden" type="hidden" name="order" value="">
 
-            '<button type="submit" name="submit">Оплатить</button>'.
-        '</form>'.
+            <input id="receipt" type="hidden" name="receipt" value="">
+            <input id="amount" type="hidden" name="amount" value="">
+
+            <input id="email" type="hidden" name="email" value="">
+            <input id="phone" type="hidden" name="phone" value="">
+
+            <button type="submit" name="submit">Оплатить</button>
+        </form>'.
         '<script>
             document
                 .querySelector("div#pay-tinkoff>form")
                 .addEventListener("submit", e => (
                     e.preventDefault(e),
-                    
+
+                    document
+                        .querySelector("div#pay-tinkoff>form")
+                        .email.value = 
+                            document
+                                .querySelector("div#fin-order>span.order").innerHTML,                    
+
                     document
                         .querySelector("div#pay-tinkoff>form")
                         .email.value = 
@@ -45,7 +53,7 @@ return function($form){
                     document
                         .querySelector("div#pay-tinkoff>form")
                         .receipt.value = JSON.stringify({
-                            "EmailCompany": "mail@mail.com",
+                            "EmailCompany": "'.$companyemail.'",
                             "Taxation": "patent",
                             "Items": 
                                 Array.from(
@@ -69,10 +77,12 @@ return function($form){
                                 }))
 
                         }),
+
                     pay(document.querySelector("div#pay-tinkoff>form"))
                 ))
         </script>'.
-        '</div>';
+        '</div>'.
+        $footer;
 }
 
 ?>

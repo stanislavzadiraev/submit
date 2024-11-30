@@ -30,6 +30,21 @@ function A($a){
     else return null;
 }
 
+function ID(){
+  $data = random_bytes(16);
+  $data[6] = chr(ord($data[6]) & 0x0f | 0x40); // set version to 0100
+  $data[8] = chr(ord($data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
+  return vsprintf('%s-%s', str_split(bin2hex($data), 4));
+}
+
+function EMAIL($target, $subject, $content){
+
+    wp_mail($target, $subject, $content);
+
+    return $content;
+}
+
+
 function render_node($node){
     if ($node == null)
         return '';
@@ -329,11 +344,15 @@ function render_form($node){
             '<div id="fin-'.$node['name'].'">'.
                 '<style>
                     div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
-                    div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total { font-weight: bold; }
+                    div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
                 </style>'.
+                '<div id="fin-order">'.
+                    '<span class="label">'.'ЗАКАЗ'.'</span>'.
+                    '<span class="order">'.ID().'</span>'.   
+                '</div>'.
                 implode(array_map('render_form', $node['value'])).
                 '<div id="fin-total">'.
-                    '<span class="label">'.'Итого'.'</span>'.
+                    '<span class="label">'.'ИТОГО'.'</span>'.
                     '<span class="total">'.'0'.'</span>'.
                 '</div>'.
                 '<script>
@@ -401,9 +420,13 @@ add_shortcode(
         },
         'POST' => function ($atts) {
             return
-            (include plugin_dir_path(__FILE__) . 'gates/' . 'tinkoff.php')(
-                render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form'])
-            );
+                EMAIL(
+                    'zadiraeff@yandex.ru',
+                    'ЗАКАЗ',
+                    render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form'])
+
+                ).
+                (include plugin_dir_path(__FILE__) . 'gates/' . 'tinkoff.php')('', '', '1698927993527', 'zadiraeff@yandex.ru');
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
