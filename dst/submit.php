@@ -419,6 +419,9 @@ add_shortcode(
             return render_node(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form']);
         },
         'POST' => function ($atts) {
+
+            wp_mail('zadiraeff@yandex.ru', 'test', 'test');
+
             return
                 EMAIL(
                     'zadiraeff@yandex.ru',
