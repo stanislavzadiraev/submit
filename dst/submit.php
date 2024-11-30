@@ -38,9 +38,8 @@ function ID(){
 }
 
 function EMAIL($target, $subject, $content){
-
-    wp_mail($target, $subject, $content);
-
+    if(wp_mail($target, $subject, $content, array('Content-Type: text/html; charset=UTF-8')));
+    
     return $content;
 }
 
@@ -420,16 +419,13 @@ add_shortcode(
         },
         'POST' => function ($atts) {
 
-            wp_mail('zadiraeff@yandex.ru', 'test', 'test');
-
             return
                 EMAIL(
-                    'zadiraeff@yandex.ru',
+                    [$atts['mail'], $_POST[$node['email']]],
                     'ЗАКАЗ',
-                    render_form(include plugin_dir_path(__FILE__) . 'forms/' . $atts['form'])
-
+                    render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form'])
                 ).
-                (include plugin_dir_path(__FILE__) . 'gates/' . 'tinkoff.php')('', '', '1698927993527', 'zadiraeff@yandex.ru');
+                (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('', '');
         }
     ][$_SERVER['REQUEST_METHOD']]
 );

@@ -1,5 +1,8 @@
 <?php
 
+$terminalkey = '1698927993527';
+$companyemail = 'zadiraeff@yandex.ru';
+
 return function($header, $footer, $terminalkey, $companyemail){
     return 
         $header.
