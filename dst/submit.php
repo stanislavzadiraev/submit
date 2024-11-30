@@ -425,7 +425,7 @@ add_shortcode(
                     'ЗАКАЗ',
                     render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form'])
                 ).
-                (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('<div>HEADER</div>', '<div>FOOTER</div>');
+                (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('', '');
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
