@@ -44,6 +44,24 @@ function EMAIL($target, $subject, $content){
     return $content;
 }
 
+$STYLE =
+    '<style>
+        div:has(>input[type=text])>label:after {content: " ";}                
+        div:has(>input[type=text][required])>label:after {content: " * ";}
+
+        div:has(>input[type=email])>label:after {content: " ";}                        
+        div:has(>input[type=email][required])>label:after {content: " * ";}
+
+        div:has(>input[type=tel])>label:after {content: " ";}                        
+        div:has(>input[type=tel][required])>label:after {content: " * ";}                    
+
+        div:has(>input[type=checkbox])>label:before {content: " ";}                        
+        div:has(>input[type=checkbox][required])>label:before {content: " * ";}
+        
+        div:has(>select)>label:after {content: " ";}                
+        div:has(>select[required])>label:after {content: " * ";}
+    </style>'
+;
 
 function render_node($node){
     if ($node == null) return 
@@ -53,22 +71,7 @@ function render_node($node){
         '<div id="div-'.$node['name'].'" cost="0">'.
             '<form name="'.$node['name'].'" method="post">'.
                 '<input type="hidden" name="ID" value="'.ID().'">'.
-                '<style>
-                    div:has(>input[type=text])>label:after {content: " ";}                
-                    div:has(>input[type=text][required])>label:after {content: " * ";}
-
-                    div:has(>input[type=email])>label:after {content: " ";}                        
-                    div:has(>input[type=email][required])>label:after {content: " * ";}
-
-                    div:has(>input[type=tel])>label:after {content: " ";}                        
-                    div:has(>input[type=tel][required])>label:after {content: " * ";}                    
-
-                    div:has(>input[type=checkbox])>label:before {content: " ";}                        
-                    div:has(>input[type=checkbox][required])>label:before {content: " * ";}
-                    
-                    div:has(>select)>label:after {content: " ";}                
-                    div:has(>select[required])>label:after {content: " * ";}
-                </style>'.
+                $STYLE.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).                
                 '<button type="submit" name="submit" value="" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
@@ -338,6 +341,7 @@ function render_form($node){
 
     else if ($node['type'] == 'form') return
         '<div id="fin-'.$node['name'].'">'.
+            $STYLE.
             '<style>
                 div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
                 div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
