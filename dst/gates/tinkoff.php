@@ -1,9 +1,10 @@
 <?php
 
-$terminalkey = '1698927993527';
-$companyemail = 'somebody@somewhere.ru';
-
 return function($header, $footer){
+
+    $terminalkey = '1698927993527';
+    $companyemail = 'somebody@somewhere.ru';
+
     return 
         $header.
         '<div id="pay-tinkoff">'.
