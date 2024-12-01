@@ -341,7 +341,6 @@ function render_form($node){
 
     else if ($node['type'] == 'form') return
         '<div id="fin-'.$node['name'].'">'.
-            $STYLE.
             '<style>
                 div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
                 div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
