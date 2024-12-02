@@ -107,7 +107,8 @@ function render_node($node){
                             document
                                 .querySelector(`div#div-'.$node['name'].'>form>button`).innerHTML = [
                                     document.querySelector(`div#div-'.$node['name'].'>form>button[name="submit"]`).attributes.text.value,
-                                    document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value
+                                    document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value,
+                                    "Руб."
                                 ].join(` `),
                             document
                                 .querySelector(`div#div-'.$node['name'].'>form>button`).attributes.value.value = 
@@ -361,7 +362,7 @@ function render_form($node){
             '<div id="fin-total">'.
                 '<span class="label">'.'ИТОГО:'.'</span>'.
                 ' '.
-                '<span class="total">'.$_POST['submit'].'</span>'.
+                '<span class="total">'.VC((int)($_POST['submit'])).'</span>'.
             '</div>'.
         '</div>';
 
