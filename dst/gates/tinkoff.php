@@ -1,6 +1,6 @@
 <?php
 
-return function($header, $footer){
+return function($submit){
 
     $terminalkey = '1698927993527';
     $companyemail = 'somebody@somewhere.ru';
@@ -22,7 +22,7 @@ return function($header, $footer){
             <input id="email" type="hidden" name="email" value="">
             <input id="phone" type="hidden" name="phone" value="">
 
-            <button type="submit" name="submit">Оплатить</button>
+            <button type="submit" name="submit">'.$submit.'</button>
         </form>'.
         '<script>
             document

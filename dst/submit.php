@@ -20,6 +20,11 @@ function V($v){
     else return '';
 }
 
+function VC($v){
+    if (gettype($v) == 'integer') return $v." Руб.";
+    else return '';
+}
+
 function S($s){
     if (gettype($s) == 'string') return $s;
     else return '';
@@ -38,30 +43,18 @@ function ID(){
   return vsprintf('%s-%s', str_split(bin2hex($data), 4));
 }
 
-function EMAIL($target, $subject, $content){
-    wp_mail($target, $subject, $content, array('Content-Type: text/html; charset=UTF-8'));
+function EMAIL($target, $subject, $content, $envelope){
+    
+    wp_mail(
+        $target,
+        $subject,
+        $envelope['header'].$content.$envelope['footer'],
+        array('Content-Type: text/html; charset=UTF-8')
+    );
     
     return $content;
 }
 
-$STYLE =
-    '<style>
-        div:has(>input[type=text])>label:after {content: " ";}                
-        div:has(>input[type=text][required])>label:after {content: " * ";}
-
-        div:has(>input[type=email])>label:after {content: " ";}                        
-        div:has(>input[type=email][required])>label:after {content: " * ";}
-
-        div:has(>input[type=tel])>label:after {content: " ";}                        
-        div:has(>input[type=tel][required])>label:after {content: " * ";}                    
-
-        div:has(>input[type=checkbox])>label:before {content: " ";}                        
-        div:has(>input[type=checkbox][required])>label:before {content: " * ";}
-        
-        div:has(>select)>label:after {content: " ";}                
-        div:has(>select[required])>label:after {content: " * ";}
-    </style>'
-;
 
 function render_node($node){
     if ($node == null) return 
@@ -71,7 +64,22 @@ function render_node($node){
         '<div id="div-'.$node['name'].'" cost="0">'.
             '<form name="'.$node['name'].'" method="post">'.
                 '<input type="hidden" name="ID" value="'.ID().'">'.
-                $STYLE.
+                '<style>
+                    div:has(>input[type=text])>label:after {content: " ";}                
+                    div:has(>input[type=text][required])>label:after {content: " * ";}
+            
+                    div:has(>input[type=email])>label:after {content: " ";}                        
+                    div:has(>input[type=email][required])>label:after {content: " * ";}
+            
+                    div:has(>input[type=tel])>label:after {content: " ";}                        
+                    div:has(>input[type=tel][required])>label:after {content: " * ";}                    
+            
+                    div:has(>input[type=checkbox])>label:before {content: " ";}                        
+                    div:has(>input[type=checkbox][required])>label:before {content: " * ";}
+                    
+                    div:has(>select)>label:after {content: " ";}                
+                    div:has(>select[required])>label:after {content: " * ";}
+                </style>'.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).                
                 '<button type="submit" name="submit" value="" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
@@ -215,7 +223,7 @@ function render_node($node){
                     [$_SERVER['REQUEST_METHOD']].'" '.
                 'cost="'.V($node['value']).'" '.
             '>'.
-            '<label for="'.$node['name'].'">'.' '.V($node['value']).' '.S($node['label']).'</label>'.
+            '<label for="'.$node['name'].'">'.' '.VC($node['value']).' '.S($node['label']).'</label>'.
             render_node(A($node['value'])).
             '<script>
                 document
@@ -275,7 +283,7 @@ function render_node($node){
                     function($name, $node){
                         return 
                             '<option value="'.$name.'"cost="'.V($node['value']).'" '.D($node['disabled']).'>'.
-                                V($node).implode(' ', array_filter([S($node['label']), V($node['value'])])).
+                                VC($node).implode(' ', array_filter([S($node['label']), VC($node['value'])])).
                             '</option>';
                     },
                     array_keys($node['value']),
@@ -342,16 +350,17 @@ function render_form($node){
     else if ($node['type'] == 'form') return
         '<div id="fin-'.$node['name'].'">'.
             '<style>
-                div#fin-'.$node['name'].' span:not(:empty):after, div#fin-'.$node['name'].' span:not(:empty):before { content:" "; }
                 div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
             </style>'.
             '<div id="fin-order">'.
-                '<span class="label">'.'ЗАКАЗ: '.'</span>'.
+                '<span class="label">'.'ЗАКАЗ:'.'</span>'.
+                ' '.
                 '<span class="order">'.$_POST['ID'].'</span>'.   
             '</div>'.
             implode(array_map('render_form', $node['value'])).
             '<div id="fin-total">'.
-                '<span class="label">'.'ИТОГО: '.'</span>'.
+                '<span class="label">'.'ИТОГО:'.'</span>'.
+                ' '.
                 '<span class="total">'.$_POST['submit'].'</span>'.
             '</div>'.
         '</div>';
@@ -362,33 +371,39 @@ function render_form($node){
     else if ($node['type'] == 'text' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
             '<span class="name">'.$node['label'].'</span>'.
+            ' '.
             '<span class="text">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'email' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
             '<span class="name">'.$node['label'].'</span>'.
+            ' '.
             '<span class="email">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'phone' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
             '<span>'.$node['label'].'</span>'.
+            ' '.
             '<span class="phone">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'" name="'.$node['label'].'" cost="'.V($node['value']).'">'.
             '<span class="name">'.$node['label'].'</span>'.
-            '<span class="cost">'.V($node['value']).'</span>'.
+            ' '.
+            '<span class="cost">'.VC($node['value']).'</span>'.
         '</div>'.
         render_form(A($node['value']));
 
     else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'" name="'.$node['value'][$_POST[$node['name']]]['label'].'" cost="'.V($node['value'][$_POST[$node['name']]]['value']).'">'.
             '<span class="that">'.$node['label'].'</span>'.
+            ' '.
             '<span class="name">'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
-            '<span class="cost">'.V($node['value'][$_POST[$node['name']]]['value']).'</span>'.
+            ' '.
+            '<span class="cost">'.VC($node['value'][$_POST[$node['name']]]['value']).'</span>'.
         '</div>'.
         render_form(A($node['value'][$_POST[$node['name']]]['value']));
 }
@@ -401,11 +416,12 @@ add_shortcode(
         },
         'POST' => function ($atts){ return
             EMAIL(
-                [$atts['mail'], $_POST['email']],
+                [$atts['master'], $_POST['email']],
                 'ЗАКАЗ: '.$_POST['ID'].' - '.'ИТОГО: '.$_POST['submit'],
-                render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form'])
+                render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form']),
+                include plugin_dir_path(__FILE__).'mails/'.$atts['mail']
             ).
-            (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('', '');
+            (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('Оплатить');
         }
     ][$_SERVER['REQUEST_METHOD']]
 );
