@@ -15,13 +15,15 @@ function D($r){
     else return '';
 }
 
-function V($v){
-    if (gettype($v) == 'integer') return $v;
+
+
+function VC($v){
+    if (gettype($v) == 'integer') return "<span>".$v."</span> Руб.";
     else return '';
 }
 
-function VC($v){
-    if (gettype($v) == 'integer') return $v." Руб.";
+function V($v){
+    if (gettype($v) == 'integer') return $v;
     else return '';
 }
 
@@ -35,6 +37,8 @@ function A($a){
     else return null;
 }
 
+
+
 function ID(){
   $data = random_bytes(16);
   $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
@@ -43,8 +47,9 @@ function ID(){
   return vsprintf('%s-%s', str_split(bin2hex($data), 4));
 }
 
+
+
 function EMAIL($target, $subject, $content, $envelope){
-    
     wp_mail(
         $target,
         $subject,
@@ -56,6 +61,7 @@ function EMAIL($target, $subject, $content, $envelope){
 }
 
 
+
 function render_node($node){
     if ($node == null) return 
             '';
@@ -65,24 +71,17 @@ function render_node($node){
             '<form name="'.$node['name'].'" method="post">'.
                 '<input type="hidden" name="ID" value="'.ID().'">'.
                 '<style>
-                    div:has(>input[type=text])>label:after {content: " ";}                
-                    div:has(>input[type=text][required])>label:after {content: " * ";}
-            
-                    div:has(>input[type=email])>label:after {content: " ";}                        
-                    div:has(>input[type=email][required])>label:after {content: " * ";}
-            
-                    div:has(>input[type=tel])>label:after {content: " ";}                        
-                    div:has(>input[type=tel][required])>label:after {content: " * ";}                    
-            
-                    div:has(>input[type=checkbox])>label:before {content: " ";}                        
-                    div:has(>input[type=checkbox][required])>label:before {content: " * ";}
-                    
-                    div:has(>select)>label:after {content: " ";}                
-                    div:has(>select[required])>label:after {content: " * ";}
+                    div:has(>input[type=text][required])>label:after {content: " *";}
+                    div:has(>input[type=email][required])>label:after {content: " *";}
+                    div:has(>input[type=tel][required])>label:after {content: " *";}                    
+                    div:has(>input[type=checkbox][required])>label:before {content: "* ";}
+                    div:has(>select[required])>label:after {content: " *";}
                 </style>'.
                 '<div>'.$node['label'].'</div>'.
                 implode(array_map('render_node', $node['value'])).                
-                '<button type="submit" name="submit" value="" text="'.S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).'">'.'</button>'.
+                '<button type="submit" name="submit" value="0">'.
+                    S($node['state']).S(A($node['state'])[$_SERVER['REQUEST_METHOD']]).' '.VC(0).
+                '</button>'.
                 '<script>
                     document
                         .querySelectorAll(`div#div-'.$node['name'].'>form>div`)
@@ -91,7 +90,6 @@ function render_node($node){
                                 .querySelector(`div#div-'.$node['name'].'>form`)
                                 .dispatchEvent(new Event("change"))
                         )))
-
                     document
                         .querySelector(`div#div-'.$node['name'].'>form`)
                         .addEventListener("change", e => (
@@ -105,16 +103,12 @@ function render_node($node){
                                         (Number(div.attributes.cost?.value) || 0)
                                 ),
                             document
-                                .querySelector(`div#div-'.$node['name'].'>form>button`).innerHTML = [
-                                    document.querySelector(`div#div-'.$node['name'].'>form>button[name="submit"]`).attributes.text.value,
+                                .querySelector(`div#div-'.$node['name'].'>form>button>span`).innerHTML = 
                                     document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value,
-                                    "Руб."
-                                ].join(` `),
                             document
                                 .querySelector(`div#div-'.$node['name'].'>form>button`).attributes.value.value = 
                                     document.querySelector(`div#div-'.$node['name'].'`).attributes.cost.value
                         ))
-
                     document
                         .querySelector(`div#div-'.$node['name'].'>form`)
                         .dispatchEvent(new Event("change"))    
@@ -135,7 +129,6 @@ function render_node($node){
                                 .querySelector(`div#div-'.$node['name'].'>fieldset`)
                                 .dispatchEvent(new Event("change"))
                         )))
-
                     document
                         .querySelector(`div#div-'.$node['name'].'>fieldset`)
                         .addEventListener("change", e => (
@@ -149,7 +142,6 @@ function render_node($node){
                                         (Number(div.attributes.cost?.value) || 0)
                                 )
                         ))
-
                     document
                         .querySelector(`div#div-'.$node['name'].'>fieldset`)
                         .dispatchEvent(new Event("change"))
@@ -159,30 +151,30 @@ function render_node($node){
 
     else if ($node['type'] == 'text') return
         '<div id="div-'.$node['name'].'" cost="0">'.
-            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>&nbsp;'.
             '<input type="text" '.
                 'id="'.$node['name'].'" '.
                 'name="'.$node['name'].'" '.
-                    R($node['required']).' '.
-                    'value="'.
+                R($node['required']).' '.
+                'value="'.
                     [
                         'GET'=> $node['value'],
                         'POST' => $_POST[$node['name']]
                     ]
                     [$_SERVER['REQUEST_METHOD']].
                 '" '.
-                '" placeholder="'.$node['placeholder'].'" '.
+                '"placeholder="'.$node['placeholder'].'" '.
             '>'.
         '</div>';
 
     else if ($node['type'] == 'email') return
         '<div id="div-'.$node['name'].'" cost="0">'.
-            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>&nbsp;'.
             '<input type="email" '.
                 'id="'.$node['name'].'" '.
                 'name="'.$node['name'].'" '.
-                    R($node['required']).' '.
-                    'value="'.
+                R($node['required']).' '.
+                'value="'.
                     [
                         'GET'=> $node['value'],
                         'POST' => $_POST[$node['name']]
@@ -194,12 +186,12 @@ function render_node($node){
 
     else if ($node['type'] == 'phone') return
         '<div id="div-'.$node['name'].'" cost="0">'.
-            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>'.
+            '<label for="'.$node['name'].'" >'.S($node['label']).'</label>&nbsp;'.
             '<input type="tel" '.
                 'id="'.$node['name'].'" '.
                 'name="'.$node['name'].'" '.
-                    R($node['required']).' '.
-                    'value="'.
+                R($node['required']).' '.
+                'value="'.
                     [
                         'GET'=> $node['value'],
                         'POST' => $_POST[$node['name']]
@@ -223,8 +215,10 @@ function render_node($node){
                     ]
                     [$_SERVER['REQUEST_METHOD']].'" '.
                 'cost="'.V($node['value']).'" '.
-            '>'.
-            '<label for="'.$node['name'].'">'.' '.VC($node['value']).' '.S($node['label']).'</label>'.
+            '>&nbsp;'.
+            '<label for="'.$node['name'].'">'.
+                implode(' ', array_filter([VC($node['value']), S($node['label'])])).
+            '</label>'.
             render_node(A($node['value'])).
             '<script>
                 document
@@ -234,7 +228,6 @@ function render_node($node){
                             .querySelector(`div#div-'.$node['name'].'>input`)
                             .dispatchEvent(new Event("change"))
                     )))
-
                 document
                     .querySelector(`div#div-'.$node['name'].'>input`)
                     .addEventListener("change", e => (
@@ -243,7 +236,7 @@ function render_node($node){
                             e.target.attributes.state.value == "true" &&
                                 e.target.attributes.cost.value ||
                             e.target.attributes.state.value == "true" &&
-                                document.querySelector(`div#div-${e.target.attributes.value.value}`)?.attributes?.cost?.value ||
+                                document.querySelector(`div#div-${e.target.attributes.value.value}`).attributes.cost.value ||
                                 0,
                         document
                             .querySelector(`div#div-'.A($node['value'])['name'].'`)
@@ -255,7 +248,6 @@ function render_node($node){
                             .querySelectorAll(`div#div-'.A($node['value'])['name'].'>*`)
                             .forEach(div => div.removeAttribute("disabled"))
                     ))
-
                 document
                     .querySelector(`div#div-'.$node['name'].'>input`)
                     .checked = document.querySelector(`div#div-'.$node['name'].'>input`).attributes.state.value == `true` && true || false,
@@ -267,9 +259,9 @@ function render_node($node){
 
     else if ($node['type'] == 'select') return
         '<div id="div-'.$node['name'].'" cost="0">'.
-            '<label for="'.$node['name'].'">'.S($node['label']).'</label>'.
-            '<select'.
-                ' id="'.$node['name'].'" '.
+            '<label for="'.$node['name'].'">'.S($node['label']).'</label>&nbsp;'.
+            '<select '.
+                'id="'.$node['name'].'" '.
                 'name="'.$node['name'].'" '.
                 R($node['required']).' '.
                 'state="'.
@@ -284,7 +276,7 @@ function render_node($node){
                     function($name, $node){
                         return 
                             '<option value="'.$name.'"cost="'.V($node['value']).'" '.D($node['disabled']).'>'.
-                                VC($node).implode(' ', array_filter([S($node['label']), VC($node['value'])])).
+                                implode(' ', array_filter([VC($node), S($node['label']), VC($node['value'])])).
                             '</option>';
                     },
                     array_keys($node['value']),
@@ -305,7 +297,6 @@ function render_node($node){
                             .querySelector(`div#div-'.$node['name'].'>select`)
                             .dispatchEvent(new Event("change"))
                     )))
-
                 document
                     .querySelector(`div#div-'.$node['name'].'>select`)
                     .addEventListener("change", e => (
@@ -327,7 +318,6 @@ function render_node($node){
                             .querySelectorAll(`div#div-'.$node['name'].'>#div-${e.target.value}>*`)
                             .forEach(div => div.removeAttribute("disabled"))
                     ))
-
                 document
                     .querySelector(`div#div-'.$node['name'].'>select`)
                     .value = document.querySelector(`div#div-'.$node['name'].'>select`).attributes.state.value || 0
@@ -344,69 +334,64 @@ function render_node($node){
 }
 
 
-function render_form($node){
+function render_list($node){
     if ($node == null) return
         '';
 
     else if ($node['type'] == 'form') return
         '<div id="fin-'.$node['name'].'">'.
             '<style>
-                div#fin-'.$node['name'].' span.label, div#fin-'.$node['name'].' span.total, div#fin-'.$node['name'].' span.order { font-weight: bold; }
+                div#fin-'.$node['name'].' span.label,
+                div#fin-'.$node['name'].' span.total,
+                div#fin-'.$node['name'].' span.order
+                    { font-weight: bold; }
             </style>'.
             '<div id="fin-order">'.
-                '<span class="label">'.'ЗАКАЗ:'.'</span>'.
-                ' '.
+                '<span class="label">'.'ЗАКАЗ:'.'</span>&nbsp;'.
                 '<span class="order">'.$_POST['ID'].'</span>'.   
             '</div>'.
-            implode(array_map('render_form', $node['value'])).
+            implode(array_map('render_list', $node['value'])).
             '<div id="fin-total">'.
-                '<span class="label">'.'ИТОГО:'.'</span>'.
-                ' '.
+                '<span class="label">'.'ИТОГО:'.'</span>&nbsp;'.
                 '<span class="total">'.VC((int)($_POST['submit'])).'</span>'.
             '</div>'.
         '</div>';
 
     else if ($node['type'] == 'node') return
-        implode(array_map('render_form', $node['value']));
+        implode(array_map('render_list', $node['value']));
 
     else if ($node['type'] == 'text' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
-            '<span class="name">'.$node['label'].'</span>'.
-            ' '.
+            '<span class="name">'.$node['label'].'</span>&nbsp;'.
             '<span class="text">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'email' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
-            '<span class="name">'.$node['label'].'</span>'.
-            ' '.
+            '<span class="name">'.$node['label'].'</span>&nbsp;'.
             '<span class="email">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'phone' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'">'.
-            '<span>'.$node['label'].'</span>'.
-            ' '.
+            '<span>'.$node['label'].'</span>&nbsp;'.
             '<span class="phone">'.$_POST[$node['name']].'</span>'.
         '</div>';
 
     else if ($node['type'] == 'check' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'" name="'.$node['label'].'" cost="'.V($node['value']).'">'.
-            '<span class="name">'.$node['label'].'</span>'.
-            ' '.
+            '<span class="name">'.$node['label'].'</span>&nbsp;'.
             '<span class="cost">'.VC($node['value']).'</span>'.
         '</div>'.
-        render_form(A($node['value']));
+        render_list(A($node['value']));
 
     else if ($node['type'] == 'select' && array_key_exists($node['name'], $_POST)) return
         '<div id="fin-'.$node['name'].'" name="'.$node['value'][$_POST[$node['name']]]['label'].'" cost="'.V($node['value'][$_POST[$node['name']]]['value']).'">'.
-            '<span class="that">'.$node['label'].'</span>'.
-            ' '.
-            '<span class="name">'.$node['value'][$_POST[$node['name']]]['label'].'</span>'.
-            ' '.
+            '<span class="that">'.$node['label'].'</span>&nbsp;'.
+            '<span class="name">'.$node['value'][$_POST[$node['name']]]['label'].'</span>&nbsp;'.
             '<span class="cost">'.VC($node['value'][$_POST[$node['name']]]['value']).'</span>'.
         '</div>'.
-        render_form(A($node['value'][$_POST[$node['name']]]['value']));
+        render_list(A($node['value'][$_POST[$node['name']]]['value']));
 }
 
 add_shortcode(
@@ -419,7 +404,7 @@ add_shortcode(
             EMAIL(
                 [$atts['master'], $_POST['email']],
                 'ЗАКАЗ: '.$_POST['ID'].' - '.'ИТОГО: '.$_POST['submit'],
-                render_form(include plugin_dir_path(__FILE__).'forms/'.$atts['form']),
+                render_list(include plugin_dir_path(__FILE__).'forms/'.$atts['form']),
                 include plugin_dir_path(__FILE__).'mails/'.$atts['mail']
             ).
             (include plugin_dir_path(__FILE__).'gates/'.$atts['gate'])('Оплатить');
